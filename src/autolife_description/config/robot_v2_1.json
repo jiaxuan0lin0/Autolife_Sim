@@ -1,0 +1,1181 @@
+{
+    "robot_v2_1": {
+        "mod_microphone_": {
+            "mod_microphone_pc320532": {
+                "mod_name": "mod_microphone_main",
+                "driver_model": "gst",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "PC320532",
+                    "sound_card_longname": "PC-320532",
+                    "control_name": "Mic",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0,
+                    "audio_processing": {
+                        "force_minimal_pipeline": false,
+                        "high_pass_cutoff": 200,
+                        "gate_threshold": 0.01,
+                        "compressor_threshold": 0.1,
+                        "compressor_ratio": 4,
+                        "rnnoise_vad_threshold": 0.1
+                    }
+                }
+            },
+            "mod_microphone_gadget": {
+                "mod_name": "mod_microphone_main",
+                "driver_model": "gst",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "Gadget",
+                    "sound_card_longname": "USB Gadget",
+                    "control_name": "Capture Volume",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0,
+                    "audio_processing": {
+                        "force_minimal_pipeline": false,
+                        "high_pass_cutoff": 200,
+                        "gate_threshold": 0.01,
+                        "compressor_threshold": 0.1,
+                        "compressor_ratio": 4,
+                        "rnnoise_vad_threshold": 0.1
+                    }
+                }
+            },
+            "mod_microphone_3.5mm_jack": {
+                "mod_name": "mod_microphone_auxiliary",
+                "driver_model": "gst",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "PCH",
+                    "sound_card_longname": "HDA Intel PCH",
+                    "control_name": "Mic",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0,
+                    "audio_processing": {
+                        "force_minimal_pipeline": false,
+                        "high_pass_cutoff": 200,
+                        "gate_threshold": 0.01,
+                        "compressor_threshold": 0.1,
+                        "compressor_ratio": 4,
+                        "rnnoise_vad_threshold": 0.1
+                    }
+                }
+            },
+            "mod_microphone_dji_mini": {
+                "mod_name": "mod_microphone_auxiliary",
+                "driver_model": "gst",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "MINI",
+                    "sound_card_longname": "DJI Technology Co., Ltd. DJI MIC MINI",
+                    "control_name": "Mic",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0
+                }
+            }
+        },
+        "mod_speaker_": {
+            "mod_speaker_pc320532": {
+                "mod_name": "mod_speaker_main",
+                "driver_model": "alsa",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "PC320532",
+                    "sound_card_longname": "PC-320532",
+                    "control_name": "PCM",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "period_size": 1200,
+                    "periods": 4,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0
+                }
+            },
+            "mod_speaker_kt": {
+                "mod_name": "mod_speaker_main",
+                "driver_model": "alsa",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "Audio",
+                    "sound_card_longname": "KT USB Audio",
+                    "control_name": "Headphone",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "period_size": 1200,
+                    "periods": 4,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0
+                }
+            },
+            "mod_speaker_3.5mm_jack": {
+                "mod_name": "mod_speaker_main",
+                "driver_model": "alsa",
+                "driver_version": "v1",
+                "settings": {
+                    "sound_card_name": "PCH",
+                    "sound_card_longname": "HDA Intel PCH",
+                    "control_name": "PCM",
+                    "sample_rate": 48000,
+                    "channels": 2,
+                    "period_size": 1200,
+                    "periods": 4,
+                    "default_volume": 100,
+                    "default_volume_factor": 1.0
+                }
+            }
+        },
+        "mod_camera_": {
+            "mod_camera_head_left": {
+                "mod_name": "mod_camera_head_left",
+                "driver_model": "v4l2",
+                "driver_version": "v1",
+                "settings": {
+                    "usb_bus_id": "usb-0000:00:14.0-8",
+                    "width": 2560,
+                    "height": 1440,
+                    "channel": 3,
+                    "fps": 30,
+                    "disable_lazy_reading": false,
+                    "shm": {
+                        "enabled": true,
+                        "data_shm_name": "/camera_image_buffer_head_left",
+                        "meta_shm_name": "/camera_metadata_struct_head_left",
+                        "read_mutex_name": "/read_mutex_lock_head_left",
+                        "write_lock_name": "/write_data_lock_head_left",
+                        "writer_queue_name": "/writer_queue_sem_head_left"
+                    }
+                }
+            },
+            "mod_camera_head_right": {
+                "mod_name": "mod_camera_head_right",
+                "driver_model": "v4l2",
+                "driver_version": "v1",
+                "settings": {
+                    "usb_bus_id": "usb-0000:00:14.0-7",
+                    "width": 2560,
+                    "height": 1440,
+                    "channel": 3,
+                    "fps": 30,
+                    "disable_lazy_reading": false,
+                    "shm": {
+                        "enabled": true,
+                        "data_shm_name": "/camera_image_buffer_head_right",
+                        "meta_shm_name": "/camera_metadata_struct_head_right",
+                        "read_mutex_name": "/read_mutex_lock_head_right",
+                        "write_lock_name": "/write_data_lock_head_right",
+                        "writer_queue_name": "/writer_queue_sem_head_right"
+                    }
+                }
+            },
+            "mod_camera_head_rear": {
+                "mod_name": "mod_camera_head_rear",
+                "driver_model": "v4l2",
+                "driver_version": "v1",
+                "settings": {
+                    "usb_bus_id": "usb-0000:00:14.0-3",
+                    "width": 2560,
+                    "height": 1440,
+                    "channel": 3,
+                    "fps": 30,
+                    "disable_lazy_reading": false,
+                    "shm": {
+                        "enabled": true,
+                        "data_shm_name": "/camera_image_buffer_head_rear",
+                        "meta_shm_name": "/camera_metadata_struct_head_rear",
+                        "read_mutex_name": "/read_mutex_lock_head_rear",
+                        "write_lock_name": "/write_data_lock_head_rear",
+                        "writer_queue_name": "/writer_queue_sem_head_rear"
+                    }
+                }
+            },
+            "mod_camera_hand_left": {
+                "mod_name": "mod_camera_hand_left",
+                "driver_model": "v4l2",
+                "driver_version": "v1",
+                "settings": {
+                    "usb_bus_id": "usb-0000:00:14.0-6.3",
+                    "width": 640,
+                    "height": 480,
+                    "channel": 3,
+                    "fps": 30,
+                    "extra_config": true,
+                    "disable_lazy_reading": false,
+                    "shm": {
+                        "enabled": true,
+                        "data_shm_name": "/camera_image_buffer_hand_left",
+                        "meta_shm_name": "/camera_metadata_struct_hand_left",
+                        "read_mutex_name": "/read_mutex_lock_hand_left",
+                        "write_lock_name": "/write_data_lock_hand_left",
+                        "writer_queue_name": "/writer_queue_sem_hand_left"
+                    }
+                }
+            },
+            "mod_camera_hand_right": {
+                "mod_name": "mod_camera_hand_right",
+                "driver_model": "v4l2",
+                "driver_version": "v1",
+                "settings": {
+                    "usb_bus_id": "usb-0000:00:14.0-6.4",
+                    "width": 640,
+                    "height": 480,
+                    "channel": 3,
+                    "fps": 30,
+                    "extra_config": true,
+                    "disable_lazy_reading": false,
+                    "shm": {
+                        "enabled": true,
+                        "data_shm_name": "/camera_image_buffer_hand_right",
+                        "meta_shm_name": "/camera_metadata_struct_hand_right",
+                        "read_mutex_name": "/read_mutex_lock_hand_right",
+                        "write_lock_name": "/write_data_lock_hand_right",
+                        "writer_queue_name": "/writer_queue_sem_hand_right"
+                    }
+                }
+            },
+            "mod_camera_rgbd_head": {
+                "mod_name": "mod_camera_rgbd_head",
+                "driver_model": "realsense",
+                "driver_version": "v1",
+                "settings": {
+                    "serial": "",
+                    "width": 640,
+                    "height": 480,
+                    "fps": 60,
+                    "accel": 250,
+                    "gyro": 200,
+                    "enable_depth": true,
+                    "enable_color": true,
+                    "enable_accel": true,
+                    "enable_gyro": true,
+                    "align_depth_to_color": true,
+                    "disable_lazy_reading": true,
+                    "shm": {
+                        "enabled": true,
+                        "data_shm_name_color": "/camera_image_buffer_rgbd_head_color",
+                        "meta_shm_name_color": "/camera_metadata_struct_rgbd_head_color",
+                        "intrinsics_shm_name_color": "/camera_intrinsics_struct_rgbd_head_color",
+                        "read_mutex_name_color": "/read_mutex_lock_rgbd_head_color",
+                        "write_lock_name_color": "/write_data_lock_rgbd_head_color",
+                        "writer_queue_name_color": "/writer_queue_sem_rgbd_head_color",
+                        "data_shm_name_depth": "/camera_image_buffer_rgbd_head_depth",
+                        "meta_shm_name_depth": "/camera_metadata_struct_rgbd_head_depth",
+                        "intrinsics_shm_name_depth": "/camera_intrinsics_struct_rgbd_head_depth",
+                        "read_mutex_name_depth": "/read_mutex_lock_rgbd_head_depth",
+                        "write_lock_name_depth": "/write_data_lock_rgbd_head_depth",
+                        "writer_queue_name_depth": "/writer_queue_sem_rgbd_head_depth"
+                    }
+                }
+            }
+        },
+        "mod_battery_": {
+            "mod_battery_main": {
+                "mod_name": "mod_battery_main",
+                "driver_model": "rs485",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "/dev/ttyBattery",
+                    "bitrate": 9600
+                }
+            }
+        },
+        "mod_imu_": {
+            "mod_imu_main": {
+                "mod_name": "mod_imu_main",
+                "driver_model": "h30",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "/dev/ttyIMU",
+                    "bitrate": 460800
+                }
+            }
+        },
+        "mod_lidar_": {
+            "mod_lidar_front": {
+                "mod_name": "mod_lidar_front",
+                "driver_model": "rp",
+                "driver_version": "v1",
+                "settings": {
+                    "port": "/dev/ttyUSB1"
+                }
+            },
+            "mod_lidar_rear": {
+                "mod_name": "mod_lidar_rear",
+                "driver_model": "rp",
+                "driver_version": "v1",
+                "settings": {
+                    "port": "/dev/ttyUSB0"
+                }
+            }
+        },
+        "mod_ultrasonic_": {
+            "mod_ultrasonic_front_right": {
+                "mod_name": "mod_ultrasonic_front_right",
+                "driver_model": "dyp",
+                "driver_version": "v1",
+                "settings": {
+                    "port": "/dev/ttyUltrasonicFrontRight",
+                    "work_mode": 2
+                }
+            },
+            "mod_ultrasonic_rear_left": {
+                "mod_name": "mod_ultrasonic_rear_left",
+                "driver_model": "dyp",
+                "driver_version": "v1",
+                "settings": {
+                    "port": "/dev/ttyUltrasonicRearLeft",
+                    "work_mode": 2
+                }
+            }
+        },
+        "mod_safeguard_": {
+            "mod_safeguard_main": {
+                "mod_name": "mod_safeguard_main",
+                "driver_model": "sg",
+                "driver_version": "v1",
+                "settings": {
+                    "port": "/dev/ttySafeGuard"
+                }
+            }
+        },
+        "mod_motor_": {
+            "mod_motor_neck": {
+                "mod_name": "mod_motor_neck",
+                "driver_model": "dm",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "PCAN_USBBUS",
+                    "interface": "pcan",
+                    "bitrate": 1000000,
+                    "pcan_device_id": null
+                },
+                "devices": [
+                    {
+                        "can_id": 25,
+                        "joint_name": "Joint_Neck_Yaw",
+                        "extra_configs": {
+                            "motor_model": "DM4310",
+                            "ctl_mode": 3,
+                            "master_id": 69,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 10.0,
+                            "PMAX": 12.5,
+                            "VMAX": 30.0,
+                            "TMAX": 10.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 26,
+                        "joint_name": "Joint_Neck_Pitch",
+                        "extra_configs": {
+                            "motor_model": "DM4310",
+                            "ctl_mode": 3,
+                            "master_id": 70,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 10.0,
+                            "PMAX": 12.5,
+                            "VMAX": 30.0,
+                            "TMAX": 10.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 27,
+                        "joint_name": "Joint_Neck_Roll",
+                        "extra_configs": {
+                            "motor_model": "DM4310",
+                            "ctl_mode": 3,
+                            "master_id": 71,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 10.0,
+                            "PMAX": 12.5,
+                            "VMAX": 30.0,
+                            "TMAX": 10.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    }
+                ]
+            },
+            "mod_motor_left_arm": {
+                "mod_name": "mod_motor_left_arm",
+                "driver_model": "dm",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "PCAN_USBBUS",
+                    "interface": "pcan",
+                    "bitrate": 1000000,
+                    "pcan_device_id": null
+                },
+                "devices": [
+                    {
+                        "can_id": 5,
+                        "joint_name": "Joint_Left_Shoulder_Inner",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 53,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 6,
+                        "joint_name": "Joint_Left_Shoulder_Outer",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 54,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 7,
+                        "joint_name": "Joint_Left_UpperArm",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 55,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 8,
+                        "joint_name": "Joint_Left_Elbow",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 56,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 9,
+                        "joint_name": "Joint_Left_Forearm",
+                        "extra_configs": {
+                            "motor_model": "DM4340",
+                            "ctl_mode": 3,
+                            "master_id": 57,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 40.0,
+                            "PMAX": 12.5,
+                            "VMAX": 10.0,
+                            "TMAX": 28.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 10,
+                        "joint_name": "Joint_Left_Wrist_Upper",
+                        "extra_configs": {
+                            "motor_model": "DM4340",
+                            "ctl_mode": 3,
+                            "master_id": 58,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 40.0,
+                            "PMAX": 12.5,
+                            "VMAX": 10.0,
+                            "TMAX": 28.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 11,
+                        "joint_name": "Joint_Left_Wrist_Lower",
+                        "extra_configs": {
+                            "motor_model": "DM4340",
+                            "ctl_mode": 3,
+                            "master_id": 59,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 40.0,
+                            "PMAX": 12.5,
+                            "VMAX": 10.0,
+                            "TMAX": 28.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 12,
+                        "joint_name": "Joint_Left_Gripper",
+                        "extra_configs": {
+                            "motor_model": "DM4310",
+                            "ctl_mode": 1,
+                            "master_id": 60,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 10.0,
+                            "PMAX": 12.5,
+                            "VMAX": 30.0,
+                            "TMAX": 10.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    }
+                ]
+            },
+            "mod_motor_right_arm": {
+                "mod_name": "mod_motor_right_arm",
+                "driver_model": "dm",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "PCAN_USBBUS",
+                    "interface": "pcan",
+                    "bitrate": 1000000,
+                    "pcan_device_id": null
+                },
+                "devices": [
+                    {
+                        "can_id": 13,
+                        "joint_name": "Joint_Right_Shoulder_Inner",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 61,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 14,
+                        "joint_name": "Joint_Right_Shoulder_Outer",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 62,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 15,
+                        "joint_name": "Joint_Right_UpperArm",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 63,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 16,
+                        "joint_name": "Joint_Right_Elbow",
+                        "extra_configs": {
+                            "motor_model": "DM6248",
+                            "ctl_mode": 3,
+                            "master_id": 64,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 48.0,
+                            "PMAX": 12.566,
+                            "VMAX": 20.0,
+                            "TMAX": 120.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 17,
+                        "joint_name": "Joint_Right_Forearm",
+                        "extra_configs": {
+                            "motor_model": "DM4340",
+                            "ctl_mode": 3,
+                            "master_id": 65,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 40.0,
+                            "PMAX": 12.5,
+                            "VMAX": 10.0,
+                            "TMAX": 28.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 18,
+                        "joint_name": "Joint_Right_Wrist_Upper",
+                        "extra_configs": {
+                            "motor_model": "DM4340",
+                            "ctl_mode": 3,
+                            "master_id": 66,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 40.0,
+                            "PMAX": 12.5,
+                            "VMAX": 10.0,
+                            "TMAX": 28.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 19,
+                        "joint_name": "Joint_Right_Wrist_Lower",
+                        "extra_configs": {
+                            "motor_model": "DM4340",
+                            "ctl_mode": 3,
+                            "master_id": 67,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 40.0,
+                            "PMAX": 12.5,
+                            "VMAX": 10.0,
+                            "TMAX": 28.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 20,
+                        "joint_name": "Joint_Right_Gripper",
+                        "extra_configs": {
+                            "motor_model": "DM4310",
+                            "ctl_mode": 1,
+                            "master_id": 68,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 14,
+                            "gear_ratio": 10.0,
+                            "PMAX": 12.5,
+                            "VMAX": 30.0,
+                            "TMAX": 10.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    }
+                ]
+            },
+            "mod_motor_waist-leg": {
+                "mod_name": "mod_motor_waist-leg",
+                "driver_model": "eu",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "PCAN_USBBUS",
+                    "interface": "pcan",
+                    "bitrate": 1000000,
+                    "pcan_device_id": null
+                },
+                "devices": [
+                    {
+                        "can_id": 21,
+                        "joint_name": "Joint_Waist_Yaw",
+                        "extra_configs": {
+                            "motor_model": "PH20",
+                            "adc_conversion": 0.013427734,
+                            "torque_constant": 14.9072,
+                            "ctl_mode": 3,
+                            "angle_offset": 0,
+                            "ReductionRatio": 121,
+                            "positionLimitEnabled": 0
+                        }
+                    },
+                    {
+                        "can_id": 22,
+                        "joint_name": "Joint_Waist_Pitch",
+                        "extra_configs": {
+                            "motor_model": "PH20",
+                            "adc_conversion": 0.013427734,
+                            "torque_constant": 14.9072,
+                            "ctl_mode": 3,
+                            "angle_offset": 0,
+                            "ReductionRatio": 121,
+                            "positionLimitEnabled": 0
+                        }
+                    },
+                    {
+                        "can_id": 23,
+                        "joint_name": "Joint_Knee",
+                        "extra_configs": {
+                            "motor_model": "PH25",
+                            "adc_conversion": 0.013427734,
+                            "torque_constant": 13.2979,
+                            "ctl_mode": 3,
+                            "angle_offset": 0,
+                            "ReductionRatio": 121,
+                            "positionLimitEnabled": 0
+                        }
+                    },
+                    {
+                        "can_id": 24,
+                        "joint_name": "Joint_Ankle",
+                        "extra_configs": {
+                            "motor_model": "PH25",
+                            "adc_conversion": 0.013427734,
+                            "torque_constant": 13.2979,
+                            "ctl_mode": 3,
+                            "angle_offset": 0,
+                            "ReductionRatio": 121,
+                            "positionLimitEnabled": 0
+                        }
+                    }
+                ]
+            },
+            "mod_motor_gv": {
+                "mod_name": "mod_motor_gv",
+                "driver_model": "dm",
+                "driver_version": "v1",
+                "settings": {
+                    "bus_prefix": "PCAN_USBBUS",
+                    "interface": "pcan",
+                    "bitrate": 1000000,
+                    "pcan_device_id": null
+                },
+                "devices": [
+                    {
+                        "can_id": 1,
+                        "joint_name": "Joint_Ground_Vehicle_Front_Left",
+                        "extra_configs": {
+                            "motor_model": "DM8006",
+                            "ctl_mode": 3,
+                            "master_id": 49,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 21,
+                            "gear_ratio": 6.0,
+                            "PMAX": 12.5,
+                            "VMAX": 45.0,
+                            "TMAX": 20.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 2,
+                        "joint_name": "Joint_Ground_Vehicle_Front_Right",
+                        "extra_configs": {
+                            "motor_model": "DM8006",
+                            "ctl_mode": 3,
+                            "master_id": 50,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 21,
+                            "gear_ratio": 6.0,
+                            "PMAX": 12.5,
+                            "VMAX": 45.0,
+                            "TMAX": 20.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 3,
+                        "joint_name": "Joint_Ground_Vehicle_Rear_Right",
+                        "extra_configs": {
+                            "motor_model": "DM8006",
+                            "ctl_mode": 3,
+                            "master_id": 51,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 21,
+                            "gear_ratio": 6.0,
+                            "PMAX": 12.5,
+                            "VMAX": 45.0,
+                            "TMAX": 20.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    },
+                    {
+                        "can_id": 4,
+                        "joint_name": "Joint_Ground_Vehicle_Rear_Left",
+                        "extra_configs": {
+                            "motor_model": "DM8006",
+                            "ctl_mode": 3,
+                            "master_id": 52,
+                            "acc": 2.0,
+                            "dec": -2.0,
+                            "max_speed": 600.0,
+                            "hardware_ver": 1445998643,
+                            "software_ver": 0,
+                            "sub_ver": 51,
+                            "NPP": 21,
+                            "gear_ratio": 6.0,
+                            "PMAX": 12.5,
+                            "VMAX": 45.0,
+                            "TMAX": 20.0,
+                            "POS_KP_MAX": 500,
+                            "POS_KP_MIN": 0,
+                            "POS_KD_MAX": 5,
+                            "POS_KD_MIN": 0,
+                            "I_BW": 1000.0,
+                            "KP_VEL": 0.004057577811181545,
+                            "KI_VEL": 0.015707960352301598,
+                            "KP_POS": 54.0,
+                            "KI_POS": 0.0,
+                            "pos_offset": 0,
+                            "direction": 1.0
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}
