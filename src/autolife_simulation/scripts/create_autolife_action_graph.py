@@ -34,8 +34,8 @@ og.Controller.edit(
             # Providing path to /autolife robot to Articulation Controller node
             # Providing the robot path is equivalent to setting the targetPrim in Articulation Controller node
             # ("ArticulationController.inputs:usePath", True),      # if you are using an older version of Isaac Sim, you can  uncomment this line
-            ("ArticulationController.inputs:robotPath", "/World/autolife/root_joint"),
-            ("PublishJointState.inputs:targetPrim", "/World/autolife/root_joint")
+            ("ArticulationController.inputs:robotPath", "/World/autolife/Link_Ground_Vehicle_X"),
+            ("PublishJointState.inputs:targetPrim", "/World/autolife/Link_Ground_Vehicle_X")
         ],
     },
 )
