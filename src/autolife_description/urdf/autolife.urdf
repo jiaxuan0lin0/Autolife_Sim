@@ -147,7 +147,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Ground_Vehicle.STL" />
+          filename="../meshes/autolife/Link_Ground_Vehicle.STL" />
       </geometry>
       <material
         name="">
@@ -161,7 +161,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Ground_Vehicle.STL" />
+          filename="../meshes/autolife/Link_Ground_Vehicle.STL" />
       </geometry>
     </collision>
   </link>
@@ -187,7 +187,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Lidar_Front.STL" />
+          filename="../meshes/autolife/Link_Lidar_Front.STL" />
       </geometry>
       <material
         name="">
@@ -201,7 +201,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Lidar_Front.STL" />
+          filename="../meshes/autolife/Link_Lidar_Front.STL" />
       </geometry>
     </collision>
   </link>
@@ -240,7 +240,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Lidar_Back.STL" />
+          filename="../meshes/autolife/Link_Lidar_Back.STL" />
       </geometry>
       <material
         name="">
@@ -254,7 +254,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Lidar_Back.STL" />
+          filename="../meshes/autolife/Link_Lidar_Back.STL" />
       </geometry>
     </collision>
   </link>
@@ -293,7 +293,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_IMU.STL" />
+          filename="../meshes/autolife/Link_IMU.STL" />
       </geometry>
       <material
         name="">
@@ -307,7 +307,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_IMU.STL" />
+          filename="../meshes/autolife/Link_IMU.STL" />
       </geometry>
     </collision>
   </link>
@@ -346,7 +346,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Ankle_to_Knee.STL" />
+          filename="../meshes/autolife/Link_Ankle_to_Knee.STL" />
       </geometry>
       <material
         name="">
@@ -360,7 +360,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Ankle_to_Knee.STL" />
+          filename="../meshes/autolife/Link_Ankle_to_Knee.STL" />
       </geometry>
     </collision>
   </link>
@@ -404,7 +404,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Knee_to_Waist_Pitch.STL" />
+          filename="../meshes/autolife/Link_Knee_to_Waist_Pitch.STL" />
       </geometry>
       <material
         name="">
@@ -418,7 +418,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Knee_to_Waist_Pitch.STL" />
+          filename="../meshes/autolife/Link_Knee_to_Waist_Pitch.STL" />
       </geometry>
     </collision>
   </link>
@@ -462,7 +462,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Waist_Pitch_to_Waist_Yaw.STL" />
+          filename="../meshes/autolife/Link_Waist_Pitch_to_Waist_Yaw.STL" />
       </geometry>
       <material
         name="">
@@ -476,7 +476,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Waist_Pitch_to_Waist_Yaw.STL" />
+          filename="../meshes/autolife/Link_Waist_Pitch_to_Waist_Yaw.STL" />
       </geometry>
     </collision>
   </link>
@@ -520,7 +520,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
+          filename="../meshes/autolife/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
       </geometry>
       <material
         name="">
@@ -534,7 +534,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
+          filename="../meshes/autolife/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
       </geometry>
     </collision>
   </link>
@@ -578,7 +578,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
+          filename="../meshes/autolife/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
       </geometry>
       <material
         name="">
@@ -592,7 +592,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
+          filename="../meshes/autolife/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
       </geometry>
     </collision>
   </link>
@@ -636,7 +636,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
+          filename="../meshes/autolife/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
       </geometry>
       <material
         name="">
@@ -650,7 +650,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
+          filename="../meshes/autolife/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
       </geometry>
     </collision>
   </link>
@@ -694,7 +694,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_UpperArm_to_Elbow.STL" />
+          filename="../meshes/autolife/Link_Left_UpperArm_to_Elbow.STL" />
       </geometry>
       <material
         name="">
@@ -708,7 +708,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_UpperArm_to_Elbow.STL" />
+          filename="../meshes/autolife/Link_Left_UpperArm_to_Elbow.STL" />
       </geometry>
     </collision>
   </link>
@@ -752,7 +752,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Elbow_to_Forearm.STL" />
+          filename="../meshes/autolife/Link_Left_Elbow_to_Forearm.STL" />
       </geometry>
       <material
         name="">
@@ -766,7 +766,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Elbow_to_Forearm.STL" />
+          filename="../meshes/autolife/Link_Left_Elbow_to_Forearm.STL" />
       </geometry>
     </collision>
   </link>
@@ -810,7 +810,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Forearm_to_Wrist_Upper.STL" />
+          filename="../meshes/autolife/Link_Left_Forearm_to_Wrist_Upper.STL" />
       </geometry>
       <material
         name="">
@@ -824,7 +824,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Forearm_to_Wrist_Upper.STL" />
+          filename="../meshes/autolife/Link_Left_Forearm_to_Wrist_Upper.STL" />
       </geometry>
     </collision>
   </link>
@@ -868,7 +868,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
+          filename="../meshes/autolife/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
       </geometry>
       <material
         name="">
@@ -882,7 +882,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
+          filename="../meshes/autolife/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
       </geometry>
     </collision>
   </link>
@@ -926,7 +926,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Wrist_Lower_to_Gripper.STL" />
+          filename="../meshes/autolife/Link_Left_Wrist_Lower_to_Gripper.STL" />
       </geometry>
       <material
         name="">
@@ -940,7 +940,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Wrist_Lower_to_Gripper.STL" />
+          filename="../meshes/autolife/Link_Left_Wrist_Lower_to_Gripper.STL" />
       </geometry>
     </collision>
   </link>
@@ -984,7 +984,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Gripper_Left.STL" />
+          filename="../meshes/autolife/Link_Camera_Gripper_Left.STL" />
       </geometry>
       <material
         name="">
@@ -998,7 +998,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Gripper_Left.STL" />
+          filename="../meshes/autolife/Link_Camera_Gripper_Left.STL" />
       </geometry>
     </collision>
   </link>
@@ -1037,7 +1037,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper.STL" />
       </geometry>
       <material
         name="">
@@ -1051,7 +1051,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper.STL" />
       </geometry>
     </collision>
   </link>
@@ -1095,7 +1095,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Left_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Left_Inner_Knuckle.STL" />
       </geometry>
       <material
         name="">
@@ -1109,7 +1109,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Left_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Left_Inner_Knuckle.STL" />
       </geometry>
     </collision>
   </link>
@@ -1157,7 +1157,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Left_Finger.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Left_Finger.STL" />
       </geometry>
       <material
         name="">
@@ -1171,7 +1171,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Left_Finger.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Left_Finger.STL" />
       </geometry>
     </collision>
   </link>
@@ -1219,7 +1219,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Right_Outer_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Right_Outer_Knuckle.STL" />
       </geometry>
       <material
         name="">
@@ -1233,7 +1233,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Right_Outer_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Right_Outer_Knuckle.STL" />
       </geometry>
     </collision>
   </link>
@@ -1281,7 +1281,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Right_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Right_Inner_Knuckle.STL" />
       </geometry>
       <material
         name="">
@@ -1295,7 +1295,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Right_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Right_Inner_Knuckle.STL" />
       </geometry>
     </collision>
   </link>
@@ -1343,7 +1343,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Right_Finger.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Right_Finger.STL" />
       </geometry>
       <material
         name="">
@@ -1357,7 +1357,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Left_Gripper_Right_Finger.STL" />
+          filename="../meshes/autolife/Link_Left_Gripper_Right_Finger.STL" />
       </geometry>
     </collision>
   </link>
@@ -1405,7 +1405,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Shoulder_Inner_to_Shoulder_Outer.STL" />
+          filename="../meshes/autolife/Link_Right_Shoulder_Inner_to_Shoulder_Outer.STL" />
       </geometry>
       <material
         name="">
@@ -1419,7 +1419,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Shoulder_Inner_to_Shoulder_Outer.STL" />
+          filename="../meshes/autolife/Link_Right_Shoulder_Inner_to_Shoulder_Outer.STL" />
       </geometry>
     </collision>
   </link>
@@ -1463,7 +1463,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Shoulder_Outer_to_UpperArm.STL" />
+          filename="../meshes/autolife/Link_Right_Shoulder_Outer_to_UpperArm.STL" />
       </geometry>
       <material
         name="">
@@ -1477,7 +1477,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Shoulder_Outer_to_UpperArm.STL" />
+          filename="../meshes/autolife/Link_Right_Shoulder_Outer_to_UpperArm.STL" />
       </geometry>
     </collision>
   </link>
@@ -1521,7 +1521,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_UpperArm_to_Elbow.STL" />
+          filename="../meshes/autolife/Link_Right_UpperArm_to_Elbow.STL" />
       </geometry>
       <material
         name="">
@@ -1535,7 +1535,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_UpperArm_to_Elbow.STL" />
+          filename="../meshes/autolife/Link_Right_UpperArm_to_Elbow.STL" />
       </geometry>
     </collision>
   </link>
@@ -1579,7 +1579,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Elbow_to_Forearm.STL" />
+          filename="../meshes/autolife/Link_Right_Elbow_to_Forearm.STL" />
       </geometry>
       <material
         name="">
@@ -1593,7 +1593,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Elbow_to_Forearm.STL" />
+          filename="../meshes/autolife/Link_Right_Elbow_to_Forearm.STL" />
       </geometry>
     </collision>
   </link>
@@ -1637,7 +1637,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Forearm_to_Wrist_Upper.STL" />
+          filename="../meshes/autolife/Link_Right_Forearm_to_Wrist_Upper.STL" />
       </geometry>
       <material
         name="">
@@ -1651,7 +1651,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Forearm_to_Wrist_Upper.STL" />
+          filename="../meshes/autolife/Link_Right_Forearm_to_Wrist_Upper.STL" />
       </geometry>
     </collision>
   </link>
@@ -1695,7 +1695,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Wrist_Upper_to_Wrist_Lower.STL" />
+          filename="../meshes/autolife/Link_Right_Wrist_Upper_to_Wrist_Lower.STL" />
       </geometry>
       <material
         name="">
@@ -1709,7 +1709,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Wrist_Upper_to_Wrist_Lower.STL" />
+          filename="../meshes/autolife/Link_Right_Wrist_Upper_to_Wrist_Lower.STL" />
       </geometry>
     </collision>
   </link>
@@ -1753,7 +1753,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Wrist_Lower_to_Gripper.STL" />
+          filename="../meshes/autolife/Link_Right_Wrist_Lower_to_Gripper.STL" />
       </geometry>
       <material
         name="">
@@ -1767,7 +1767,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Wrist_Lower_to_Gripper.STL" />
+          filename="../meshes/autolife/Link_Right_Wrist_Lower_to_Gripper.STL" />
       </geometry>
     </collision>
   </link>
@@ -1811,7 +1811,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Gripper_Right.STL" />
+          filename="../meshes/autolife/Link_Camera_Gripper_Right.STL" />
       </geometry>
       <material
         name="">
@@ -1825,7 +1825,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Gripper_Right.STL" />
+          filename="../meshes/autolife/Link_Camera_Gripper_Right.STL" />
       </geometry>
     </collision>
   </link>
@@ -1864,7 +1864,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper.STL" />
       </geometry>
       <material
         name="">
@@ -1878,7 +1878,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper.STL" />
       </geometry>
     </collision>
   </link>
@@ -1922,7 +1922,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Left_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Left_Inner_Knuckle.STL" />
       </geometry>
       <material
         name="">
@@ -1936,7 +1936,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Left_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Left_Inner_Knuckle.STL" />
       </geometry>
     </collision>
   </link>
@@ -1984,7 +1984,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Left_Finger.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Left_Finger.STL" />
       </geometry>
       <material
         name="">
@@ -1998,7 +1998,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Left_Finger.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Left_Finger.STL" />
       </geometry>
     </collision>
   </link>
@@ -2046,7 +2046,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Right_Outer_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Right_Outer_Knuckle.STL" />
       </geometry>
       <material
         name="">
@@ -2060,7 +2060,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Right_Outer_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Right_Outer_Knuckle.STL" />
       </geometry>
     </collision>
   </link>
@@ -2108,7 +2108,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Right_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Right_Inner_Knuckle.STL" />
       </geometry>
       <material
         name="">
@@ -2122,7 +2122,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Right_Inner_Knuckle.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Right_Inner_Knuckle.STL" />
       </geometry>
     </collision>
   </link>
@@ -2170,7 +2170,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Right_Finger.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Right_Finger.STL" />
       </geometry>
       <material
         name="">
@@ -2184,7 +2184,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Right_Gripper_Right_Finger.STL" />
+          filename="../meshes/autolife/Link_Right_Gripper_Right_Finger.STL" />
       </geometry>
     </collision>
   </link>
@@ -2232,7 +2232,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Neck_Roll_to_Neck_Pitch.STL" />
+          filename="../meshes/autolife/Link_Neck_Roll_to_Neck_Pitch.STL" />
       </geometry>
       <material
         name="">
@@ -2246,7 +2246,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Neck_Roll_to_Neck_Pitch.STL" />
+          filename="../meshes/autolife/Link_Neck_Roll_to_Neck_Pitch.STL" />
       </geometry>
     </collision>
   </link>
@@ -2290,7 +2290,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Neck_Pitch_to_Neck_Yaw.STL" />
+          filename="../meshes/autolife/Link_Neck_Pitch_to_Neck_Yaw.STL" />
       </geometry>
       <material
         name="">
@@ -2304,7 +2304,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Neck_Pitch_to_Neck_Yaw.STL" />
+          filename="../meshes/autolife/Link_Neck_Pitch_to_Neck_Yaw.STL" />
       </geometry>
     </collision>
   </link>
@@ -2348,7 +2348,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Neck_Yaw_to_Head.STL" />
+          filename="../meshes/autolife/Link_Neck_Yaw_to_Head.STL" />
       </geometry>
       <material
         name="">
@@ -2362,7 +2362,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Neck_Yaw_to_Head.STL" />
+          filename="../meshes/autolife/Link_Neck_Yaw_to_Head.STL" />
       </geometry>
     </collision>
   </link>
@@ -2406,7 +2406,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Back.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Back.STL" />
       </geometry>
       <material
         name="">
@@ -2420,7 +2420,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Back.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Back.STL" />
       </geometry>
     </collision>
   </link>
@@ -2459,7 +2459,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Right_Eye.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Right_Eye.STL" />
       </geometry>
       <material
         name="">
@@ -2473,7 +2473,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Right_Eye.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Right_Eye.STL" />
       </geometry>
     </collision>
   </link>
@@ -2512,7 +2512,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Left_Eye.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Left_Eye.STL" />
       </geometry>
       <material
         name="">
@@ -2526,7 +2526,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Left_Eye.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Left_Eye.STL" />
       </geometry>
     </collision>
   </link>
@@ -2565,7 +2565,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Forehead.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Forehead.STL" />
       </geometry>
       <material
         name="">
@@ -2579,7 +2579,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="../meshes/robot_v2_1/Link_Camera_Head_Forehead.STL" />
+          filename="../meshes/autolife/Link_Camera_Head_Forehead.STL" />
       </geometry>
     </collision>
   </link>
