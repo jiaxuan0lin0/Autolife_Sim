@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<library path="autolife_hardware">
+  <class
+    name="autolife_hardware/AutolifeSystem"
+    type="autolife_hardware::AutolifeSystem"
+    base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Autolife ros2_control hardware interface
+    </description>
+  </class>
+</library>
