@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="autolife_torso" params="prefix parent">
+<link name="${prefix}Link_Ankle_to_Knee">
+      <inertial>
+        <origin xyz="0.17268 3.8366E-05 -0.077005" rpy="0 0 0" />
+        <mass value="9.2977" />
+        <inertia ixx="0.031223" ixy="-0.00026" ixz="0.003734" iyy="0.2692" iyz="-0.00029" izz="0.25831" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Ankle_to_Knee.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Ankle_to_Knee.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Ankle" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Ankle_to_Knee" />
+      <axis xyz="0 0 -1" />
+      <limit lower="-1.48353" upper="1.48353" effort="207" velocity="1.8849561" />
+    </joint>
+  
+<link name="${prefix}Link_Knee_to_Waist_Pitch">
+      <inertial>
+        <origin xyz="0.18794 0.00527 -0.068726" rpy="0 0 0" />
+        <mass value="2.26667" />
+        <inertia ixx="0.017697" ixy="0.000647" ixz="8.5E-05" iyy="0.052164" iyz="6E-06" izz="0.038188" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Knee_to_Waist_Pitch.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Knee_to_Waist_Pitch.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Knee" type="revolute">
+      <origin xyz="0.3495 0 0" rpy="0 0 0" />
+      <parent link="${prefix}Link_Ankle_to_Knee" />
+      <child link="${prefix}Link_Knee_to_Waist_Pitch" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.70526" upper="2.70526" effort="207" velocity="1.8849561" />
+    </joint>
+  
+<link name="${prefix}Link_Waist_Pitch_to_Waist_Yaw">
+      <inertial>
+        <origin xyz="0.0054658 -0.00017152 -0.058569" rpy="0 0 0" />
+        <mass value="3.04338" />
+        <inertia ixx="0.007507" ixy="3.93E-06" ixz="-0.00012" iyy="0.008016" iyz="2.69E-06" izz="0.004875" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Waist_Pitch_to_Waist_Yaw.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Waist_Pitch_to_Waist_Yaw.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Waist_Pitch" type="revolute">
+      <origin xyz="0.3705 0 -0.0006" rpy="0 0 0" />
+      <parent link="${prefix}Link_Knee_to_Waist_Pitch" />
+      <child link="${prefix}Link_Waist_Pitch_to_Waist_Yaw" />
+      <axis xyz="0 0 -1" />
+      <limit lower="-1.39626" upper="2.6" effort="108" velocity="1.8849561" />
+    </joint>
+  
+<link name="${prefix}Link_Waist_Yaw_to_Shoulder_Inner">
+      <inertial>
+        <origin xyz="0.0044963 0.00025279 -0.17815" rpy="0 0 0" />
+        <mass value="6.96536" />
+        <inertia ixx="0.13838" ixy="2.4E-05" ixz="0.001719" iyy="0.110648" iyz="0.000184" izz="0.054762" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Waist_Yaw_to_Shoulder_Inner.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Waist_Yaw" type="revolute">
+      <origin xyz="0.06793 0 -0.0685" rpy="1.5708 0 -1.5708" />
+      <parent link="${prefix}Link_Waist_Pitch_to_Waist_Yaw" />
+      <child link="${prefix}Link_Waist_Yaw_to_Shoulder_Inner" />
+      <axis xyz="0 0 -1" />
+      <limit lower="-3.141" upper="3.141" effort="108" velocity="1.8849561" />
+    </joint>
+  
+  </xacro:macro>
+</robot>

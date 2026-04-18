@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="autolife_left_arm" params="prefix parent">
+<link name="${prefix}Link_Left_Shoulder_Inner_to_Shoulder_Outer">
+      <inertial>
+        <origin xyz="0.0020013 -0.00086282 0.043933" rpy="0 0 0" />
+        <mass value="0.38517" />
+        <inertia ixx="0.000633" ixy="1.19E-06" ixz="1.62E-05" iyy="0.001" iyz="4.41E-06" izz="0.000699" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Shoulder_Inner_to_Shoulder_Outer.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Shoulder_Inner" type="revolute">
+      <origin xyz="0 -0.14269 -0.27507" rpy="1.5708 0 0" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Left_Shoulder_Inner_to_Shoulder_Outer" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.932" upper="2.932" effort="97" velocity="4.188791" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Shoulder_Outer_to_UpperArm">
+      <inertial>
+        <origin xyz="0.055228 0.0026872 -0.035515" rpy="0 0 0" />
+        <mass value="1.81401" />
+        <inertia ixx="0.001495" ixy="0.000196" ixz="0.00019" iyy="0.005679" iyz="-5.8E-06" izz="0.00585" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Shoulder_Outer_to_UpperArm.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Shoulder_Outer" type="revolute">
+      <origin xyz="0.036 0 0.081" rpy="1.5708 0 1.5708" />
+      <parent link="${prefix}Link_Left_Shoulder_Inner_to_Shoulder_Outer" />
+      <child link="${prefix}Link_Left_Shoulder_Outer_to_UpperArm" />
+      <axis xyz="0 0 -1" />
+      <limit lower="-3.1415" upper="0.3141" effort="97" velocity="4.188791" />
+    </joint>
+  
+<link name="${prefix}Link_Left_UpperArm_to_Elbow">
+      <inertial>
+        <origin xyz="0.010425 0.0018897 0.14817" rpy="0 0 0" />
+        <mass value="1.16454" />
+        <inertia ixx="0.005555" ixy="4.55E-05" ixz="0.000755" iyy="0.005834" iyz="0.000183" izz="0.001025" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_UpperArm_to_Elbow.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_UpperArm_to_Elbow.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_UpperArm" type="revolute">
+      <origin xyz="0.12925 0.0044999 -0.036" rpy="1.5708 -1.5708 1.5708" />
+      <parent link="${prefix}Link_Left_Shoulder_Outer_to_UpperArm" />
+      <child link="${prefix}Link_Left_UpperArm_to_Elbow" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.915" upper="2.915" effort="97" velocity="4.188791" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Elbow_to_Forearm">
+      <inertial>
+        <origin xyz="0.074433 -0.023657 -0.033651" rpy="0 0 0" />
+        <mass value="0.71152" />
+        <inertia ixx="0.000627" ixy="-7.9E-05" ixz="-0.00013" iyy="0.001365" iyz="1.96E-05" izz="0.001303" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Elbow_to_Forearm.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Elbow_to_Forearm.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Elbow" type="revolute">
+      <origin xyz="0.025 0.036125 0.20735" rpy="-3.1416 -1.5706 1.5708" />
+      <parent link="${prefix}Link_Left_UpperArm_to_Elbow" />
+      <child link="${prefix}Link_Left_Elbow_to_Forearm" />
+      <axis xyz="0 0 1" />
+      <limit lower="0" upper="2.618" effort="97" velocity="4.188791" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Forearm_to_Wrist_Upper">
+      <inertial>
+        <origin xyz="0.0087568 -2.1901E-07 0.025031" rpy="0 0 0" />
+        <mass value="0.17972" />
+        <inertia ixx="0.000152" ixy="3.5E-09" ixz="3.29E-05" iyy="0.000257" iyz="1.77E-09" izz="0.000226" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Forearm_to_Wrist_Upper.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Forearm_to_Wrist_Upper.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Forearm" type="revolute">
+      <origin xyz="0.13094 -0.025 -0.036094" rpy="1.5708 0 1.5708" />
+      <parent link="${prefix}Link_Left_Elbow_to_Forearm" />
+      <child link="${prefix}Link_Left_Forearm_to_Wrist_Upper" />
+      <axis xyz="0 0 1" />
+      <limit lower="-2.9496" upper="2.9496" effort="27" velocity="3.7699111" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Wrist_Upper_to_Wrist_Lower">
+      <inertial>
+        <origin xyz="0.027679 0.0025321 -0.031109" rpy="0 0 0" />
+        <mass value="0.89687" />
+        <inertia ixx="0.000504" ixy="5.8E-05" ixz="-6.2E-05" iyy="0.00125" iyz="9.34E-06" izz="0.001249" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Wrist_Upper_to_Wrist_Lower.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Wrist_Upper" type="revolute">
+      <origin xyz="0.03035 0 0.05335" rpy="0 -1.5708 3.1416" />
+      <parent link="${prefix}Link_Left_Forearm_to_Wrist_Upper" />
+      <child link="${prefix}Link_Left_Wrist_Upper_to_Wrist_Lower" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1.396" upper="1.396" effort="27" velocity="3.7699111" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Wrist_Lower_to_Gripper">
+      <inertial>
+        <origin xyz="0.075472 -9.617E-05 -0.027693" rpy="0 0 0" />
+        <mass value="0.65144" />
+        <inertia ixx="0.000433" ixy="8.4E-08" ixz="-0.00012" iyy="0.000967" iyz="8.56E-08" izz="0.000813" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Wrist_Lower_to_Gripper.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Wrist_Lower_to_Gripper.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Wrist_Lower" type="revolute">
+      <origin xyz="0.059178 0.03035 -0.030393" rpy="-1.5708 0.00072703 -1.4019E-05" />
+      <parent link="${prefix}Link_Left_Wrist_Upper_to_Wrist_Lower" />
+      <child link="${prefix}Link_Left_Wrist_Lower_to_Gripper" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1.4486" upper="1.4486" effort="27" velocity="3.7699111" />
+    </joint>
+  
+  </xacro:macro>
+</robot>

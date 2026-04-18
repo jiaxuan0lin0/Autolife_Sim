@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="autolife" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:arg name="prefix" default=""/>
+    <xacro:arg name="use_ros2_control" default="false"/>
+    <xacro:arg name="use_sim" default="false"/>
+
+    <xacro:include filename="base.xacro"/>
+    <xacro:include filename="torso.xacro"/>
+    <xacro:include filename="left_arm.xacro"/>
+    <xacro:include filename="right_arm.xacro"/>
+    <xacro:include filename="left_gripper.xacro"/>
+    <xacro:include filename="right_gripper.xacro"/>
+    <xacro:include filename="head.xacro"/>
+    <xacro:include filename="sensors.xacro"/>
+    <xacro:include filename="ros2_control.xacro"/>
+
+    <xacro:autolife_base prefix="$(arg prefix)"/>
+    <xacro:autolife_torso prefix="$(arg prefix)" parent="$(arg prefix)Link_Ground_Vehicle"/>
+    <xacro:autolife_left_arm prefix="$(arg prefix)" parent="$(arg prefix)Link_Waist_Yaw_to_Shoulder_Inner"/>
+    <xacro:autolife_right_arm prefix="$(arg prefix)" parent="$(arg prefix)Link_Waist_Yaw_to_Shoulder_Inner"/>
+    <xacro:autolife_left_gripper prefix="$(arg prefix)" parent="$(arg prefix)Link_Left_Wrist_Lower_to_Gripper"/>
+    <xacro:autolife_right_gripper prefix="$(arg prefix)" parent="$(arg prefix)Link_Right_Wrist_Lower_to_Gripper"/>
+    <xacro:autolife_head prefix="$(arg prefix)" parent="$(arg prefix)Link_Waist_Yaw_to_Shoulder_Inner"/>
+    <xacro:autolife_sensors prefix="$(arg prefix)"/>
+   
+    <xacro:if value="$(arg use_ros2_control)">
+        <xacro:autolife_ros2_control prefix="$(arg prefix)"/>
+    </xacro:if>
+
+</robot>

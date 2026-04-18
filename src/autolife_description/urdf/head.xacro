@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="autolife_head" params="prefix parent">
+<link name="${prefix}Link_Neck_Roll_to_Neck_Pitch">
+      <inertial>
+        <origin xyz="-2.6629E-05 -0.0020463 -0.035504" rpy="0 0 0" />
+        <mass value="0.37698" />
+        <inertia ixx="0.000182" ixy="4.4E-07" ixz="1.93E-07" iyy="0.000153" iyz="5.8E-08" izz="0.000176" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Neck_Roll_to_Neck_Pitch.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Neck_Roll_to_Neck_Pitch.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Neck_Roll" type="revolute">
+      <origin xyz="-0.045134 0.00013407 -0.3851" rpy="3.1415 1.5708 0" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Neck_Roll_to_Neck_Pitch" />
+      <axis xyz="0 0 1" />
+      <limit lower="-0.349066" upper="0.349066" effort="7" velocity="12.5663711" />
+    </joint>
+  
+<link name="${prefix}Link_Neck_Pitch_to_Neck_Yaw">
+      <inertial>
+        <origin xyz="0.030982 6.3131E-05 -0.029796" rpy="0 0 0" />
+        <mass value="0.07737" />
+        <inertia ixx="5.12E-05" ixy="3.4E-08" ixz="4.94E-06" iyy="7.21E-05" iyz="4.14E-08" izz="3.69E-05" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Neck_Pitch_to_Neck_Yaw.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Neck_Pitch_to_Neck_Yaw.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Neck_Pitch" type="revolute">
+      <origin xyz="0 0.0265 -0.0362" rpy="-1.5708 0 0" />
+      <parent link="${prefix}Link_Neck_Roll_to_Neck_Pitch" />
+      <child link="${prefix}Link_Neck_Pitch_to_Neck_Yaw" />
+      <axis xyz="0 0 -1" />
+      <limit lower="-0.7854" upper="0.5236" effort="7" velocity="12.5663711" />
+    </joint>
+  
+<link name="${prefix}Link_Neck_Yaw_to_Head">
+      <inertial>
+        <origin xyz="0.01581 0.0010581 -0.068665" rpy="0 0 0" />
+        <mass value="0.92973" />
+        <inertia ixx="0.003331" ixy="-4E-06" ixz="3.65E-05" iyy="0.003674" iyz="1.4E-05" izz="0.002773" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Neck_Yaw_to_Head.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Neck_Yaw_to_Head.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Neck_Yaw" type="revolute">
+      <origin xyz="0.0531 0 -0.0265" rpy="-1.5708 -8.1943E-05 1.5708" />
+      <parent link="${prefix}Link_Neck_Pitch_to_Neck_Yaw" />
+      <child link="${prefix}Link_Neck_Yaw_to_Head" />
+      <axis xyz="0 0 -1" />
+      <limit lower="-1.0472" upper="1.0472" effort="7" velocity="12.5663711" />
+    </joint>
+  
+<link name="${prefix}Link_Camera_Head_Back">
+      <inertial>
+        <origin xyz="0.000212265117126798 1.21290685828335E-10 -0.0137629540350562" rpy="0 0 0" />
+        <mass value="0.00611903963030372" />
+        <inertia ixx="5.91848268714509E-07" ixy="5.18400452662858E-13" ixz="1.33425297132235E-08" iyy="6.09803902008598E-07" iyz="-3.02641551578761E-15" izz="6.62777333168068E-07" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Back.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Back.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Camera_Head_Back" type="fixed">
+      <origin xyz="-0.0828019758820687 0.0018882149376372 -0.0814088313744052" rpy="3.14151071073458 1.5707963267949 0" />
+      <parent link="${prefix}Link_Neck_Yaw_to_Head" />
+      <child link="${prefix}Link_Camera_Head_Back" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_Camera_Head_Right_Eye">
+      <inertial>
+        <origin xyz="-0.000187791929693093 1.00807457756313E-07 -0.0151485551492535" rpy="0 0 0" />
+        <mass value="0.00701699739766512" />
+        <inertia ixx="8.02374913039321E-07" ixy="-1.58984466798072E-12" ixz="-1.66816844578239E-08" iyy="8.20799957979428E-07" iyz="-8.48762119757042E-12" izz="6.97603344198353E-07" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Right_Eye.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Right_Eye.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Camera_Head_Right_Eye" type="fixed">
+      <origin xyz="0.0844122039591954 0.0334502241643137 -0.070721489633736" rpy="6.58297927681995E-05 1.48352986419486 0.000148012127540467" />
+      <parent link="${prefix}Link_Neck_Yaw_to_Head" />
+      <child link="${prefix}Link_Camera_Head_Right_Eye" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_Camera_Head_Left_Eye">
+      <inertial>
+        <origin xyz="-0.000187791929693093 1.00807453544405E-07 -0.0151485551492534" rpy="0 0 0" />
+        <mass value="0.00701699739766513" />
+        <inertia ixx="8.02374913039321E-07" ixy="-1.58984508258622E-12" ixz="-1.66816844578226E-08" iyy="8.20799957979426E-07" iyz="-8.48762157313636E-12" izz="6.9760334419835E-07" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Left_Eye.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Left_Eye.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Camera_Head_Left_Eye" type="fixed">
+      <origin xyz="0.0844173644894229 -0.0295363857131514 -0.070721489429296" rpy="6.58295355572521E-05 1.48352986419486 0.000148011869347015" />
+      <parent link="${prefix}Link_Neck_Yaw_to_Head" />
+      <child link="${prefix}Link_Camera_Head_Left_Eye" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_Camera_Head_Forehead">
+      <inertial>
+        <origin xyz="-2.78783714486863E-05 -0.00111290057192233 -0.0125212356379855" rpy="0 0 0" />
+        <mass value="0.0456887615442191" />
+        <inertia ixx="2.78342078925435E-05" ixy="1.40788987798354E-09" ixz="7.44199819145847E-09" iyy="4.136061424728E-06" iyz="-4.09805796893E-07" izz="2.7548674957145E-05" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Forehead.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Head_Forehead.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Camera_Head_Forehead" type="fixed">
+      <origin xyz="0.0830747060494238 0.00195680933216019 -0.105643949161787" rpy="0 1.18682389135591 8.19235393347809E-05" />
+      <parent link="${prefix}Link_Neck_Yaw_to_Head" />
+      <child link="${prefix}Link_Camera_Head_Forehead" />
+      <axis xyz="0 0 0" />
+    </joint>
+
+  </xacro:macro>
+</robot>

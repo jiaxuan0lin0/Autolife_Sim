@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="autolife_base" params="prefix">
+<link name="${prefix}Link_Ground_Vehicle_X">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+  
+<joint name="${prefix}Joint_Ground_Vehicle_X" type="prismatic">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}Link_Ground_Vehicle_X" />
+      <child link="${prefix}Link_Ground_Vehicle_Y" />
+      <axis xyz="1 0 0" />
+      <limit lower="-10" upper="10" effort="10" velocity="0.2" />
+    </joint>
+  
+<link name="${prefix}Link_Ground_Vehicle_Y">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+  
+<joint name="${prefix}Joint_Ground_Vehicle_Y" type="prismatic">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}Link_Ground_Vehicle_Y" />
+      <child link="${prefix}Link_Ground_Vehicle_Z" />
+      <axis xyz="0 1 0" />
+      <limit lower="-10" upper="10" effort="10" velocity="0.2" />
+    </joint>
+  
+<link name="${prefix}Link_Ground_Vehicle_Z">
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <mass value="0.001" />
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+  
+<joint name="${prefix}Joint_Ground_Vehicle_Z" type="revolute">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}Link_Ground_Vehicle_Z" />
+      <child link="${prefix}Link_Zero_Point" />
+      <axis xyz="0 0 1" />
+      <limit lower="-3.145" upper="3.145" effort="20" velocity="0.1" />
+    </joint>
+  
+<link name="${prefix}Link_Zero_Point">
+  </link>
+  
+<joint name="${prefix}Joint_Ground_Vehicle_Base" type="fixed">
+      <origin xyz="0 -0.06845 0.2863" rpy="0 -1.5708 1.5708" />
+      <parent link="${prefix}Link_Zero_Point" />
+      <child link="${prefix}Link_Ground_Vehicle" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_Ground_Vehicle">
+      <inertial>
+        <origin xyz="-0.16666 0.0027218 -0.064922" rpy="0 0 0" />
+        <mass value="27" />
+        <inertia ixx="0.092816" ixy="-0.0003649" ixz="-2.3766E-06" iyy="0.054691" iyz="-1.6874E-05" izz="0.069925" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Ground_Vehicle.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Ground_Vehicle.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+  </xacro:macro>
+</robot>

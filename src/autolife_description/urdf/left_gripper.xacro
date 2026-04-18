@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="autolife_left_gripper" params="prefix parent">
+<link name="${prefix}Link_Camera_Gripper_Left">
+      <inertial>
+        <origin xyz="0.000650099990626318 0.0273173086953055 -0.00711612944382368" rpy="0 0 0" />
+        <mass value="0.000634057174501172" />
+        <inertia ixx="9.09573316323123E-07" ixy="-3.02624965292021E-12" ixz="8.00887177775729E-13" iyy="8.30177081027899E-08" iyz="2.1874526694916E-07" izz="8.33864010711327E-07" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Gripper_Left.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Camera_Gripper_Left.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Camera_Gripper_Left" type="fixed">
+      <origin xyz="0.15432 -0.0001122 -0.030998" rpy="-1.5714 -1.5708 3.1414" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Camera_Gripper_Left" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Gripper">
+      <inertial>
+        <origin xyz="0.023272 -0.023601 -0.011" rpy="0 0 0" />
+        <mass value="0.05612" />
+        <inertia ixx="9.8029E-06" ixy="-5.8599E-07" ixz="1.6784E-12" iyy="4.6525E-06" iyz="-2.8655E-12" izz="9.0764E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Gripper" type="revolute">
+      <origin xyz="0.11649 -0.011085 0.00025163" rpy="-0.00071675 -1.5708 1.5708" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Left_Gripper" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1.333" upper="1" effort="2" velocity="1" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Gripper_Left_Inner_Knuckle">
+      <inertial>
+        <origin xyz="0.0092503 -0.02786 -0.011" rpy="0 0 0" />
+        <mass value="0.027744" />
+        <inertia ixx="1.1139E-05" ixy="2.1608E-06" ixz="1.0614E-11" iyy="5.4247E-06" iyz="6.9993E-12" izz="7.8605E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Left_Inner_Knuckle.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.89804 0.91765 0.92941 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Left_Inner_Knuckle.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Gripper_Left_Inner_Knuckle" type="revolute">
+      <origin xyz="0.12301 -0.011089 -0.017648" rpy="-0.00071675 -1.5708 1.5708" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Left_Gripper_Left_Inner_Knuckle" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1" upper="1" effort="2" velocity="1" />
+      <mimic joint="${prefix}Joint_Left_Gripper" multiplier="1" offset="0" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Gripper_Left_Finger">
+      <inertial>
+        <origin xyz="0.0026837 -0.014113 -0.010908" rpy="0 0 0" />
+        <mass value="0.03331" />
+        <inertia ixx="3.6883E-06" ixy="-9.3135E-07" ixz="-1.8787E-08" iyy="9.2058E-07" iyz="-2.522E-08" izz="3.9675E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Left_Finger.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Left_Finger.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Gripper_Left_Finger" type="revolute">
+      <origin xyz="0.017745 -0.054325 0" rpy="0 0 0" />
+      <parent link="${prefix}Link_Left_Gripper_Left_Inner_Knuckle" />
+      <child link="${prefix}Link_Left_Gripper_Left_Finger" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1" upper="1" effort="2" velocity="1" />
+      <mimic joint="${prefix}Joint_Left_Gripper" multiplier="-1" offset="0" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Gripper_Right_Outer_Knuckle">
+      <inertial>
+        <origin xyz="-0.023271 -0.023601 -0.011" rpy="0 0 0" />
+        <mass value="0.05612" />
+        <inertia ixx="9.8029E-06" ixy="5.8614E-07" ixz="1.6782E-12" iyy="4.6525E-06" iyz="2.8659E-12" izz="9.0764E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Right_Outer_Knuckle.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Right_Outer_Knuckle.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Gripper_Right_Outer_Knuckle" type="revolute">
+      <origin xyz="0.11649 -0.011085 -0.060948" rpy="-0.00071675 -1.5708 1.5708" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Left_Gripper_Right_Outer_Knuckle" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1" upper="1" effort="2" velocity="1" />
+      <mimic joint="${prefix}Joint_Left_Gripper" multiplier="-1" offset="0" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Gripper_Right_Inner_Knuckle">
+      <inertial>
+        <origin xyz="-0.0089786 -0.027949 -0.011" rpy="0 0 0" />
+        <mass value="0.027744" />
+        <inertia ixx="1.1207E-05" ixy="-2.0679E-06" ixz="1.0836E-11" iyy="5.3567E-06" iyz="-6.6911E-12" izz="7.8605E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Right_Inner_Knuckle.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.89804 0.91765 0.92941 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Right_Inner_Knuckle.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Gripper_Right_Inner_Knuckle" type="revolute">
+      <origin xyz="0.12301 -0.011089 -0.043048" rpy="-0.00071675 -1.5708 1.5708" />
+      <parent link="${parent}" />
+      <child link="${prefix}Link_Left_Gripper_Right_Inner_Knuckle" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1" upper="1" effort="2" velocity="1" />
+      <mimic joint="${prefix}Joint_Left_Gripper" multiplier="-1" offset="0" />
+    </joint>
+  
+<link name="${prefix}Link_Left_Gripper_Right_Finger">
+      <inertial>
+        <origin xyz="-0.0026833 -0.014113 -0.010908" rpy="0 0 0" />
+        <mass value="0.03331" />
+        <inertia ixx="3.6882E-06" ixy="9.3143E-07" ixz="1.8786E-08" iyy="9.2063E-07" iyz="-2.5213E-08" izz="3.9675E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Right_Finger.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.79216 0.81961 0.93333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Left_Gripper_Right_Finger.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Left_Gripper_Right_Finger" type="revolute">
+      <origin xyz="-0.017744 -0.054326 0" rpy="0 0 0" />
+      <parent link="${prefix}Link_Left_Gripper_Right_Inner_Knuckle" />
+      <child link="${prefix}Link_Left_Gripper_Right_Finger" />
+      <axis xyz="0 0 1" />
+      <limit lower="-1" upper="1" effort="2" velocity="1" />
+      <mimic joint="${prefix}Joint_Left_Gripper" multiplier="1" offset="0" />
+    </joint>
+  
+  </xacro:macro>
+</robot>

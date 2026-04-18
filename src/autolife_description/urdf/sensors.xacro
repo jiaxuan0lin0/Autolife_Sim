@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="autolife_sensors" params="prefix">
+<link name="${prefix}Link_Lidar_Front">
+      <inertial>
+        <origin xyz="0.000350057412929136 -0.000109954768020726 -0.0220434690313592" rpy="0 0 0" />
+        <mass value="0.00396736313140061" />
+        <inertia ixx="7.97690975370117E-07" ixy="1.93761411778914E-13" ixz="3.02633325727517E-13" iyy="7.4492015022857E-07" iyz="-4.49416099169722E-10" izz="1.53951922639566E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Lidar_Front.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Lidar_Front.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Lidar_Front" type="fixed">
+      <origin xyz="-0.1185 -0.215 -0.06845" rpy="0 1.5708 -3.1416" />
+      <parent link="${prefix}Link_Ground_Vehicle" />
+      <child link="${prefix}Link_Lidar_Front" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_Lidar_Back">
+      <inertial>
+        <origin xyz="0.000349936305938353 0.000109954768020643 -0.022043469031119" rpy="0 0 0" />
+        <mass value="0.00396736313140057" />
+        <inertia ixx="7.97690975369997E-07" ixy="1.93889479743415E-13" ixz="-9.12553053571279E-14" iyy="7.44920150228567E-07" iyz="4.49416099119459E-10" izz="1.53951922639576E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Lidar_Back.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_Lidar_Back.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_Lidar_Back" type="fixed">
+      <origin xyz="-0.1185 0.215 -0.06845" rpy="0 1.5708 -3.1416" />
+      <parent link="${prefix}Link_Ground_Vehicle" />
+      <child link="${prefix}Link_Lidar_Back" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+<link name="${prefix}Link_IMU">
+      <inertial>
+        <origin xyz="-0.00053225572084678 0.00540285654729063 0.00652634714553812" rpy="0 0 0" />
+        <mass value="0.0250513530544791" />
+        <inertia ixx="4.72772678964975E-06" ixy="-1.65105313412865E-09" ixz="-5.3025837507494E-12" iyy="5.75032057676297E-06" iyz="6.75832240357406E-09" izz="9.91394694823296E-06" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_IMU.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://autolife_description/meshes/autolife/Link_IMU.STL" />
+        </geometry>
+      </collision>
+    </link>
+  
+<joint name="${prefix}Joint_IMU" type="fixed">
+      <origin xyz="-0.0712999999999999 0 -0.0684500000000466" rpy="0 1.57079618464688 -3.14159265306071" />
+      <parent link="${prefix}Link_Ground_Vehicle" />
+      <child link="${prefix}Link_IMU" />
+      <axis xyz="0 0 0" />
+    </joint>
+  
+  </xacro:macro>
+</robot>
