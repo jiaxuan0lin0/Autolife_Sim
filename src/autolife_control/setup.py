@@ -13,10 +13,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='sutai',
-    maintainer_email='sutai@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='JiaxuanLin',
+    maintainer_email='jiaxuan0lin0@gmail.com',
+    description='ROS2 Controller for Autolife in Isaac Sim',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
@@ -26,6 +26,8 @@ setup(
         'console_scripts': [
             'base_controller = autolife_control.base_contorller:main',
             'torso_controller = autolife.control.torso_controller:main', 
+            'head_controller = autolife.control.head_controller:main',
+            'gripper_controller = autolife.control.gripper_controller',
         ],
     },
 )
