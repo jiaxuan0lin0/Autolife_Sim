@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'test_base_drive_response = autolife_simulation.base_drive_response_test:main',
         ],
     },
 )
