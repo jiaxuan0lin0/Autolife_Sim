@@ -24,10 +24,11 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'base_controller = autolife_control.base_contorller:main',
-            'torso_controller = autolife.control.torso_controller:main', 
-            'head_controller = autolife.control.head_controller:main',
-            'gripper_controller = autolife.control.gripper_controller',
+            'base_controller = autolife_control.base_controller:main',
+            'torso_controller = autolife_control.torso_controller:main',
+            'head_controller = autolife_control.head_controller:main',
+            'gripper_controller = autolife_control.gripper_controller:main',
+            'arm_controller = autolife_control.arm_controller:main',
         ],
     },
 )
