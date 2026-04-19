@@ -3,14 +3,19 @@
 <package format="3">
   <name>autolife_control</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="sutai@todo.todo">sutai</maintainer>
-  <license>TODO: License declaration</license>
+  <description> ROS2 Controller for Autolife in Isaac Sim </description>
+  <maintainer email="jiaxuan0lin0@gmail.com">JiaxuanLin</maintainer>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <depend>sensor_msgs</depend>
+
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
