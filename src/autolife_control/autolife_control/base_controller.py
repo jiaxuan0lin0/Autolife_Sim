@@ -111,11 +111,13 @@ class BaseController(Node):
         t.transform.rotation = odom.pose.pose.orientation
         self.tf_broadcaster.sendTransform(t)
 
-    def main(args=None):
-        rclpy.init(args=args)
-        node = BaseController()
-        rclpy.spin(node)
-        node.destroy_node()
-        rclpy.shutdown()        
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = BaseController()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
 
         

@@ -24,7 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'base_controller = autolife_control.base_contorller:main', 
+            'base_controller = autolife_control.base_contorller:main',
+            'torso_controller = autolife.control.torso_controller:main', 
         ],
     },
 )
