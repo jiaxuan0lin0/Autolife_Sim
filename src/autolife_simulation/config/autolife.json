@@ -1,0 +1,113 @@
+{
+    "ENABLED_MODULES": ["mod_motor_neck", "mod_motor_left_arm", "mod_motor_right_arm", "mod_motor_waist-leg", "mod_motor_gv", "mod_safeguard_main"],
+    "NECK_MOTOR_HOME_ANGLE": {
+        "zero": [0, 0, 0, 0, 0, 0, 0]
+    },
+    "LEFT_ARM_MOTOR_HOME_ANGLE": {
+        "zero": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "sitting": [0, 0, 0, 0, 20, 0, 0, 110, 0, 0, 0],
+        "standing": [0, 0, 0, 0, 20, 0, 0, 110, 0, 0, 0],
+        "recover": [0, 0, 0, 0, 0, -5, 0, 0, 0, 0, 0]
+    },
+    "RIGHT_ARM_MOTOR_HOME_ANGLE": {
+        "zero": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "sitting": [0, 0, 0, 0, -20, 0, 0, -110, 0, 0, 0],
+        "standing": [0, 0, 0, 0, -20, 0, 0, -110, 0, 0, 0],
+        "recover": [0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0]
+    },
+    "NECK_MOTOR_PID": {
+        "Kp": [4, 4, 4],
+        "Ki": [0.0, 0.0, 0.0],
+        "Kd": [0.0, 0.0, 0.0]
+    },
+    "LEG_WAIST_MOTOR_PID": {
+        "Kp": [2.5, 2.5, 4, 4],
+        "Ki": [0.0, 0.0, 0.0, 0.0],
+        "Kd": [0.0, 0.0, 0.0, 0.0]
+    },
+    "LEFT_ARM_MOTOR_PID": {
+        "Kp": [3.5, 3.5, 3.5, 3.5, 6, 6, 6],
+        "Ki": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "Kd": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    },
+    "RIGHT_ARM_MOTOR_PID": {
+        "Kp": [3.5, 3.5, 3.5, 3.5, 6, 6, 6],
+        "Ki": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        "Kd": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    },
+    "GV_MOTOR_PID": {
+        "Kp": [2.0, 2.0, 2.0],
+        "Ki": [0.0, 0.0, 0.0],
+        "Kd": [0.000, 0.000, 0.000]
+    },
+    "LEFT_GRIPPER_MOTOR_PID": {
+        "Kp": [2.0],
+        "Ki": [0.0],
+        "Kd": [0.02]
+    },
+    "RIGHT_GRIPPER_MOTOR_PID": {
+        "Kp": [2.0],
+        "Ki": [0.0],
+        "Kd": [0.02]
+    },
+    "NECK_VEL_RAMP_RATE": 0.06,
+    "LEG_WAIST_VEL_RAMP_RATE": 0.03,
+    "ARM_VEL_RAMP_RATE": 0.06,
+    "NECK_SYNC_SPEED_LIMIT": [90, 90, 90],
+    "LEG_WAIST_SYNC_SPEED_LIMIT": [30, 60, 30, 60],
+    "ARM_SYNC_SPEED_LIMIT": [90, 90, 120, 150, 180, 180, 180],
+    "NECK_ASYNC_SPEED_LIMIT": [80, 80, 80],
+    "LEG_WAIST_ASYNC_SPEED_LIMIT": [30, 60, 30, 60],
+    "ARM_ASYNC_SPEED_LIMIT": [120, 120, 120, 120, 120, 120, 120],
+    "ARM_TORQUE_LIMIT": [50, 30, 30, 30, 10, 10, 10],
+    "GV_SPEED_LIMIT": [0.9, 0.5, 1.0],
+    "GV_MAX_SPEED_LIMIT": [1.4, 0.5, 1.0],
+    "GV_ACCEL_LIMIT": [0.9, 1.6],
+    "GV_ULTRASONIC_ENABLED": false,
+    "GV_COLLISION_MARGIN": 0.10,
+    "MAX_Z_JOINT_CONF": [76, 155, 81],  
+    "MAX_Z_HEIGHT_LIMIT": 0.56,
+    "LEG_GEOMETRY": {
+        "THIGH_LENGTH": 0.37,
+        "SHIN_LENGTH": 0.35
+    },
+    "ROT_VR_BASE_IN_ROBOT_BASE": [
+      [0, 0, 1],
+      [-1, 0, 0],
+      [0, 1, 0]
+    ],
+    "MOTOR_DEAD_ZONE":{
+        "NECK_LOWER_DEAD_ZONE": [2.0, 2.0, 2.0],
+        "NECK_UPPER_DEAD_ZONE": [2.0, 2.0, 2.0],
+        "LEG_WAIST_LOWER_DEAD_ZONE": [0.0, 0.0, 0.0, 0.0],
+        "LEG_WAIST_UPPER_DEAD_ZONE": [0.0, 0.0, 0.0, 0.0],
+        "LEFT_ARM_LOWER_DEAD_ZONE": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+        "LEFT_ARM_UPPER_DEAD_ZONE": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+        "RIGHT_ARM_LOWER_DEAD_ZONE": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+        "RIGHT_ARM_UPPER_DEAD_ZONE": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    },
+    "NECK_CHANGE_LIMIT": {
+        "IK": [45, 45, 45],
+        "MOVEMENT": [45, 45, 45]
+    },
+    "ARM_CHANGE_LIMIT": {
+        "IK": [45, 45, 45, 60, 60, 60, 60],
+        "MOVEMENT": [60, 60, 60, 90, 90, 90, 90]
+    },
+    "LEG_WAIST_CHANGE_LIMIT": {
+        "IK": [30, 30, 30, 30],
+        "MOVEMENT": [30, 30, 30, 30]
+    },
+    "ASYNC_MODE_WAIST_JOINT_IK_LIMIT": {
+        "LOWER": [0, -25],
+        "UPPER": [80, 25]
+    },
+    "WHEEL_INFO": {
+        "WHEEL_TRACK": 0.283,
+        "WHEEL_BASE": 0.38,
+        "WHEEL_RADIUS": 0.0635
+    }
+  }
+
+
+  
