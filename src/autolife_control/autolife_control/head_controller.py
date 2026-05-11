@@ -1,4 +1,7 @@
+import math
 import rclpy
+from rclpy._rclpy_pybind11 import RCLError
+from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
@@ -18,6 +21,8 @@ class HeadController(Node):
         # current state
         self.current_positions = {j: 0.0 for j in HEAD_JOINTS}
         self.current_velocities = {j: 0.0 for j in HEAD_JOINTS}
+        self.seen_positions = set()
+        self.state_initialized = False
 
         # target command
         self.target_positions = {j: 0.0 for j in HEAD_JOINTS}
@@ -48,37 +53,77 @@ class HeadController(Node):
         for j in HEAD_JOINTS:
             if j in pos:
                 self.current_positions[j] = pos[j]
+                self.seen_positions.add(j)
             if j in vel:
                 self.current_velocities[j] = vel[j]
 
+        if not self.state_initialized and len(self.seen_positions) == len(HEAD_JOINTS):
+            for j in HEAD_JOINTS:
+                self.target_positions[j] = self.current_positions[j]
+                self.target_velocities[j] = 0.0
+            self.state_initialized = True
+            self.get_logger().info('Initialized targets from current joint states')
+
     def trajectory_cb(self, msg):
         if len(msg.points) == 0:
+            self.get_logger().warn('Ignoring empty head trajectory')
             return
 
-        joint_names = msg.joint_names
+        if not self.state_initialized:
+            self.get_logger().warn('Ignoring head trajectory until /joint_states initializes targets')
+            return
 
-        self.traj_times = []
+        joint_names = list(msg.joint_names)
+        if not joint_names:
+            self.get_logger().warn('Ignoring head trajectory without joint names')
+            return
+
+        if len(set(joint_names)) != len(joint_names):
+            self.get_logger().warn(f'Ignoring head trajectory with duplicate joints: {joint_names}')
+            return
+
+        invalid_joints = [jn for jn in joint_names if jn not in HEAD_JOINTS]
+        if invalid_joints:
+            self.get_logger().warn(f'Ignoring head trajectory with invalid joints: {invalid_joints}')
+            return
+
+        traj_times = []
         for pt in msg.points:
             t = pt.time_from_start.sec + pt.time_from_start.nanosec / 1e9
-            self.traj_times.append(t)
+            if t < 0.0 or (traj_times and t <= traj_times[-1]):
+                self.get_logger().warn('Ignoring head trajectory with non-increasing waypoint times')
+                return
+            if len(pt.positions) < len(joint_names):
+                self.get_logger().warn('Ignoring head trajectory with missing point positions')
+                return
+            if pt.velocities and len(pt.velocities) < len(joint_names):
+                self.get_logger().warn('Ignoring head trajectory with incomplete point velocities')
+                return
+            values = list(pt.positions[:len(joint_names)])
+            if pt.velocities:
+                values += list(pt.velocities[:len(joint_names)])
+            if not all(math.isfinite(v) for v in values):
+                self.get_logger().warn('Ignoring head trajectory with non-finite values')
+                return
+            traj_times.append(t)
 
-        self.traj_positions = {}
-        self.traj_velocities = {}
+        traj_positions = {}
+        traj_velocities = {}
 
         for idx, jn in enumerate(joint_names):
-            if jn not in self.target_positions:
-                continue
-
             pos_list = [pt.positions[idx] for pt in msg.points]
-            self.traj_positions[jn] = pos_list
+            traj_positions[jn] = pos_list
 
             has_vel = all(len(pt.velocities) > idx for pt in msg.points)
             if has_vel:
                 vel_list = [pt.velocities[idx] for pt in msg.points]
             else:
-                vel_list = auto_compute_velocities(pos_list, self.traj_times)
-            self.traj_velocities[jn] = vel_list
+                vel_list = auto_compute_velocities(pos_list, traj_times)
+            traj_velocities[jn] = vel_list
 
+        self.traj_times = traj_times
+        self.traj_positions = traj_positions
+        self.traj_velocities = traj_velocities
         self.trajectory = msg
         self.traj_start_time = self.get_clock().now()
         self.get_logger().info(
@@ -88,6 +133,9 @@ class HeadController(Node):
         )
 
     def control_loop(self):
+        if not self.state_initialized:
+            return
+
         if self.trajectory is not None:
             elapsed = (self.get_clock().now() - self.traj_start_time).nanoseconds / 1e9
             times = self.traj_times
@@ -137,6 +185,14 @@ class HeadController(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = HeadController()
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        rclpy.spin(node)
+    except (KeyboardInterrupt, ExternalShutdownException, RCLError):
+        pass
+    finally:
+        try:
+            node.destroy_node()
+        except RCLError:
+            pass
+        if rclpy.ok():
+            rclpy.shutdown()

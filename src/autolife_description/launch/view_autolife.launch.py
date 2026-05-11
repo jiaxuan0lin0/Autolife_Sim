@@ -1,8 +1,8 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch.conditions import IfCondition
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.descriptions import ParameterValue
 from launch_ros.substitutions import FindPackageShare
 from launch.substitutions import FindExecutable
@@ -31,6 +31,12 @@ def generate_launch_description():
         description="Use joint_state_publisher_gui",
     )
 
+    use_joint_state_publisher_arg = DeclareLaunchArgument(
+        "use_joint_state_publisher",
+        default_value="true",
+        description="Publish synthetic /joint_states for standalone RViz viewing. Disable when Isaac provides /joint_states.",
+    )
+
     use_sim_time_arg = DeclareLaunchArgument(
         "use_sim_time",
         default_value="false",
@@ -52,6 +58,7 @@ def generate_launch_description():
     model = LaunchConfiguration("model")
     rvizconfig = LaunchConfiguration("rvizconfig")
     gui = LaunchConfiguration("gui")
+    use_joint_state_publisher = LaunchConfiguration("use_joint_state_publisher")
     use_sim_time = LaunchConfiguration("use_sim_time")
     prefix = LaunchConfiguration("prefix")
     use_ros2_control = LaunchConfiguration("use_ros2_control")
@@ -87,7 +94,17 @@ def generate_launch_description():
         package="joint_state_publisher_gui",
         executable="joint_state_publisher_gui",
         name="joint_state_publisher_gui",
-        condition=IfCondition(gui),
+        condition=IfCondition(
+            PythonExpression(
+                [
+                    "'",
+                    use_joint_state_publisher,
+                    "' == 'true' and '",
+                    gui,
+                    "' == 'true'",
+                ]
+            )
+        ),
         parameters=[{"use_sim_time": use_sim_time}],
     )
 
@@ -95,7 +112,17 @@ def generate_launch_description():
         package="joint_state_publisher",
         executable="joint_state_publisher",
         name="joint_state_publisher",
-        condition=UnlessCondition(gui),
+        condition=IfCondition(
+            PythonExpression(
+                [
+                    "'",
+                    use_joint_state_publisher,
+                    "' == 'true' and '",
+                    gui,
+                    "' != 'true'",
+                ]
+            )
+        ),
         parameters=[{"use_sim_time": use_sim_time}],
     )
 
@@ -112,6 +139,7 @@ def generate_launch_description():
             model_arg,
             rviz_arg,
             gui_arg,
+            use_joint_state_publisher_arg,
             use_sim_time_arg,
             prefix_arg,
             use_ros2_control_arg,
