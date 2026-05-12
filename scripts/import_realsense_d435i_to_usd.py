@@ -52,6 +52,25 @@ def _patch_empty_visual_references(physics_layer_path: Path) -> None:
     layer.Save()
 
 
+def _remove_physics_joints(physics_layer_path: Path, root_name: str) -> None:
+    from pxr import Usd
+
+    stage = Usd.Stage.Open(str(physics_layer_path))
+    if stage is None:
+        raise RuntimeError(f"Could not open USD layer: {physics_layer_path}")
+
+    for prim in list(stage.TraverseAll()):
+        type_name = prim.GetTypeName()
+        if type_name.startswith("Physics") and type_name.endswith("Joint"):
+            stage.RemovePrim(prim.GetPath())
+
+    joints = stage.GetPrimAtPath(f"/{root_name}/joints")
+    if joints and not list(joints.GetChildren()):
+        stage.RemovePrim(joints.GetPath())
+
+    stage.GetRootLayer().Save()
+
+
 def _render_camera_x_from_dae(dae_path: Path) -> float:
     _, front_z = _extract_dae_front_contour(dae_path)
     return 0.0043 + front_z + 0.0006
@@ -376,6 +395,7 @@ def main() -> int:
     physics_layer_path = out_path.parent / "configuration" / f"{out_path.stem}_physics.usd"
     if physics_layer_path.exists():
         _patch_empty_visual_references(physics_layer_path)
+        _remove_physics_joints(physics_layer_path, root_name=out_path.stem)
 
     if base_layer_path.exists():
         _patch_glass_cover(
