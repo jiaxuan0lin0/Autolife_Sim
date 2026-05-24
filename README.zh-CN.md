@@ -2,6 +2,12 @@
 
 [English README](README.md)
 
+![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E)
+![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-required-76B900)
+![OmniGibson](https://img.shields.io/badge/OmniGibson-BEHAVIOR--1K-5B6EE1)
+![Python](https://img.shields.io/badge/Python-3.12-3776AB)
+![Autolife USD](https://img.shields.io/badge/Autolife%20USD-included-555555)
+
 Autolife Sim 是一个面向 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工作空间。当前主流程是在 BEHAVIOR-1K / OmniGibson 的交互式家庭场景中加载 Autolife 机器人 USD，然后通过 Isaac Sim ActionGraph 建立 ROS 2 的关节和传感器桥接，最后使用 ROS 2 controller 栈控制机器人。
 
 当前主要验证场景是 `Wainscott_0_int`。
@@ -255,18 +261,9 @@ whole-body controller 暴露 `/whole_body_controller/follow_joint_trajectory`，
 
 仿真运行后，用 `ros2 topic list` 查看当前 stage 实际创建出来的 topic 名；需要严格验证时使用 sensor runtime test。
 
-## 资产和 License 说明
+## 仓库范围
 
-`src/asset/usd` 下的 Autolife 机器人资产属于本仓库内容。BEHAVIOR-1K assets 是外部依赖，用户必须按 BEHAVIOR dataset license 自行下载。
-
-不要提交：
-
-- BEHAVIOR dataset assets。
-- BEHAVIOR encryption key。
-- Isaac Sim 安装文件。
-- Conda 环境。
-- 生成的 `build/`、`install/`、`log/`。
-- 本地 USD 备份文件和场景缓存目录。
+示例运行所需的 Autolife 机器人资产包含在 `src/asset/usd`。BEHAVIOR-1K 场景/物体资产、BEHAVIOR dataset key、Isaac Sim 和 Conda 环境属于外部依赖，不由本仓库重新分发。运行 `Wainscott_0_int` 前，需要先通过 BEHAVIOR 官方流程安装 BEHAVIOR-1K assets。
 
 ## References
 

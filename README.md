@@ -2,6 +2,12 @@
 
 [中文说明](README.zh-CN.md)
 
+![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E)
+![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-required-76B900)
+![OmniGibson](https://img.shields.io/badge/OmniGibson-BEHAVIOR--1K-5B6EE1)
+![Python](https://img.shields.io/badge/Python-3.12-3776AB)
+![Autolife USD](https://img.shields.io/badge/Autolife%20USD-included-555555)
+
 Autolife Sim is a ROS 2 and Isaac Sim workspace for running the Autolife robot in realistic household environments. The current simulation path loads a BEHAVIOR-1K / OmniGibson interactive scene, inserts the Autolife robot USD, creates ROS 2 bridges for joints and sensors, and drives the robot with ROS 2 controller nodes.
 
 The main validated scene is `Wainscott_0_int`.
@@ -255,18 +261,9 @@ Camera message frames use stable optical frame ids, such as `camera_head_forehea
 
 Use `ros2 topic list` after the simulation is running to inspect the exact topic names created for the active stage. Use the sensor runtime test for stricter validation.
 
-## Asset and License Notes
+## Repository Scope
 
-Autolife robot assets in `src/asset/usd` are part of this repository. BEHAVIOR-1K assets are external dependencies and must be downloaded by each user under the BEHAVIOR dataset license.
-
-Do not commit:
-
-- BEHAVIOR dataset assets.
-- BEHAVIOR encryption keys.
-- Isaac Sim installation files.
-- Conda environments.
-- Generated `build/`, `install/`, and `log/` folders.
-- Local USD backup files and scene cache folders.
+Autolife robot assets required by the examples are included under `src/asset/usd`. BEHAVIOR-1K scene/object assets, the BEHAVIOR dataset key, Isaac Sim, and Conda environments are external dependencies and are not redistributed by this repository. Install BEHAVIOR-1K assets through the official BEHAVIOR workflow before running the `Wainscott_0_int` scene.
 
 ## References
 
