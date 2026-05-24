@@ -12,7 +12,7 @@ Autolife Sim is a ROS 2 and Isaac Sim workspace for running the Autolife robot i
 
 The main validated scene is `Wainscott_0_int`.
 
-## Overview
+## 🔎 Overview
 
 This repository contains the Autolife-side integration code and robot assets:
 
@@ -25,7 +25,7 @@ This repository contains the Autolife-side integration code and robot assets:
 
 This repository does not redistribute BEHAVIOR-1K scene/object assets, the BEHAVIOR dataset key, Isaac Sim, or a Conda environment.
 
-## Architecture
+## 🧭 Architecture
 
 ```mermaid
 flowchart LR
@@ -55,7 +55,7 @@ flowchart LR
 
 The controller stack is intentionally ROS-native. Isaac Sim publishes the current robot state to `/joint_states`; ROS 2 controllers publish partial joint commands; `joint_command_mux` resolves them into `/autolife/joint_command`; the Isaac-side ActionGraph applies the command to the simulated articulation.
 
-## Repository Layout
+## 📁 Repository Layout
 
 ```text
 autolife_ws/
@@ -72,9 +72,9 @@ autolife_ws/
     autolife_hardware/              # ros2_control hardware interface package
 ```
 
-## External Dependencies
+## 🧩 External Dependencies
 
-### Required
+### ✅ Required
 
 - Ubuntu with an NVIDIA GPU supported by Isaac Sim.
 - ROS 2 Jazzy.
@@ -83,15 +83,15 @@ autolife_ws/
 - BEHAVIOR-1K assets downloaded through the official BEHAVIOR installer.
 - A Conda environment for BEHAVIOR / OmniGibson, commonly named `behavior`.
 
-### BEHAVIOR assets
+### 🏠 BEHAVIOR Assets
 
 BEHAVIOR-1K data must be installed by the user through the official BEHAVIOR workflow. The dataset license is separate from the OmniGibson software license, and BEHAVIOR scene/object assets are not redistributed by this repository.
 
 The official `download_behavior_1k_assets()` path downloads the full `behavior-1k-assets` bundle. This project only uses `Wainscott_0_int` by default, but the official downloader is not a per-scene downloader. If a local single-scene cache is needed later, create it only from a legally installed BEHAVIOR dataset and do not commit or redistribute that cache.
 
-## Setup
+## ⚙️ Setup
 
-### 1. Install BEHAVIOR-1K / OmniGibson
+### 1. 🧱 Install BEHAVIOR-1K / OmniGibson
 
 Follow the official installation guide first:
 
@@ -109,7 +109,7 @@ conda activate behavior
 
 For non-interactive installation, read the official license prompts carefully before using auto-accept flags.
 
-### 2. Build this ROS 2 workspace
+### 2. 🔨 Build This ROS 2 Workspace
 
 ```bash
 cd autolife_ws
@@ -119,7 +119,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-### 3. Check the robot assets
+### 3. 🤖 Check Robot Assets
 
 Autolife USD assets are expected under:
 
@@ -129,11 +129,11 @@ src/asset/usd/
 
 These assets are small enough to keep in Git. Backup USD files such as `*.bak_*` and local scene backup folders should not be committed.
 
-## Quick Start
+## 🚀 Quick Start
 
 Open separate terminals after building the workspace.
 
-### Terminal 1: load BEHAVIOR scene with Autolife
+### Terminal 1: 🏠 Load BEHAVIOR Scene With Autolife
 
 ```bash
 cd autolife_ws
@@ -155,7 +155,7 @@ Useful options:
 - `--no-ros2-sensors`: skip sensor bridge graph creation.
 - `--sensor-manifest-path`: runtime JSON manifest for sensor tests. The default is `/tmp/autolife_sensor_manifest.json`.
 
-### Terminal 2: launch ROS 2 controllers
+### Terminal 2: 🎮 Launch ROS 2 Controllers
 
 ```bash
 cd autolife_ws
@@ -175,7 +175,7 @@ This starts:
 - `gripper_controller`
 - `whole_body_controller`
 
-### Terminal 3: run controller validation
+### Terminal 3: ✅ Run Controller Validation
 
 ```bash
 cd autolife_ws
@@ -193,7 +193,7 @@ python3 src/autolife_control/test/controller_test_runner.py --controllers whole_
 
 The controller test reads `src/autolife_control/test/controller_test_config.yaml`. It supports absolute and delta targets. The script resets the robot at the beginning and end through the whole-body action interface.
 
-### Terminal 4: run sensor validation
+### Terminal 4: 📡 Run Sensor Validation
 
 ```bash
 cd autolife_ws
@@ -205,7 +205,7 @@ python3 src/autolife_sensors/test/sensor_test_runner.py
 
 The sensor test reads the runtime manifest emitted by the Isaac sensor bridge and verifies topic existence, message type, message content, `header.frame_id`, and TF availability. The default manifest path is `/tmp/autolife_sensor_manifest.json`.
 
-### Terminal 5: inspect ROS 2 topics and RViz
+### Terminal 5: 🖥️ Inspect ROS 2 Topics and RViz
 
 ```bash
 ros2 topic list
@@ -222,7 +222,7 @@ rviz2 -d install/autolife_sensors/share/autolife_sensors/rviz/autolife_sensors.r
 
 Sensor topics are created by the Isaac Sim sensor ActionGraph. The forehead camera publishes RGB, depth, point cloud, and camera info; the other cameras publish RGB and camera info by default.
 
-## Control Interfaces
+## 🎛️ Control Interfaces
 
 ```mermaid
 flowchart TB
@@ -245,7 +245,7 @@ flowchart TB
 
 The whole-body controller exposes `/whole_body_controller/follow_joint_trajectory` and is used for coordinated whole-body targets and test reset. The mux gives whole-body commands the highest priority while they are fresh.
 
-## Sensors
+## 📡 Sensors
 
 The simulation loader copies the sensor overlay authored in the Autolife USD/world assets, then creates ROS 2 bridge nodes for the discovered sensors.
 
@@ -261,11 +261,11 @@ Camera message frames use stable optical frame ids, such as `camera_head_forehea
 
 Use `ros2 topic list` after the simulation is running to inspect the exact topic names created for the active stage. Use the sensor runtime test for stricter validation.
 
-## Repository Scope
+## 📦 Repository Scope
 
 Autolife robot assets required by the examples are included under `src/asset/usd`. BEHAVIOR-1K scene/object assets, the BEHAVIOR dataset key, Isaac Sim, and Conda environments are external dependencies and are not redistributed by this repository. Install BEHAVIOR-1K assets through the official BEHAVIOR workflow before running the `Wainscott_0_int` scene.
 
-## References
+## 📚 References
 
 This project uses BEHAVIOR-1K / OmniGibson as an external simulation dependency.
 

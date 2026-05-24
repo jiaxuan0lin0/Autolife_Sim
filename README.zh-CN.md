@@ -12,7 +12,7 @@ Autolife Sim 是一个面向 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工�
 
 当前主要验证场景是 `Wainscott_0_int`。
 
-## 项目概览
+## 🔎 项目概览
 
 这个仓库包含 Autolife 侧的集成代码和机器人资产：
 
@@ -25,7 +25,7 @@ Autolife Sim 是一个面向 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工�
 
 这个仓库不分发 BEHAVIOR-1K 场景/物体数据、BEHAVIOR 数据集 key、Isaac Sim 安装目录，也不包含 Conda 环境。
 
-## 系统架构
+## 🧭 系统架构
 
 ```mermaid
 flowchart LR
@@ -55,7 +55,7 @@ flowchart LR
 
 控制链路是 ROS-native 的：Isaac Sim 发布当前机器人状态到 `/joint_states`；ROS 2 controllers 发布各自负责的局部关节命令；`joint_command_mux` 合并后输出 `/autolife/joint_command`；Isaac 侧 ActionGraph 再把这个命令作用到仿真 articulation 上。
 
-## 仓库结构
+## 📁 仓库结构
 
 ```text
 autolife_ws/
@@ -72,9 +72,9 @@ autolife_ws/
     autolife_hardware/              # ros2_control hardware interface 包
 ```
 
-## 外部依赖
+## 🧩 外部依赖
 
-### 必需环境
+### ✅ 必需环境
 
 - 带 NVIDIA GPU 的 Ubuntu 机器，GPU 需要满足 Isaac Sim 要求。
 - ROS 2 Jazzy。
@@ -83,15 +83,15 @@ autolife_ws/
 - 通过官方 BEHAVIOR 安装流程下载的 BEHAVIOR-1K assets。
 - BEHAVIOR / OmniGibson 对应的 Conda 环境，常用环境名是 `behavior`。
 
-### BEHAVIOR 资产
+### 🏠 BEHAVIOR 资产
 
 BEHAVIOR-1K 数据必须由用户自己通过官方流程安装。BEHAVIOR dataset license 和 OmniGibson 软件 license 是独立的；这个仓库不重新分发 BEHAVIOR 的 scene/object assets。
 
 官方 `download_behavior_1k_assets()` 路径下载的是完整 `behavior-1k-assets` 数据包。本项目默认只使用 `Wainscott_0_int`，但官方 downloader 不是按单个 scene 下载的接口。后续如果要做本地单场景缓存，只能在用户已经合法安装完整 BEHAVIOR 数据集之后，在本机裁剪使用，不能把裁剪后的 BEHAVIOR 数据提交或重新分发到 GitHub。
 
-## 安装
+## ⚙️ 安装
 
-### 1. 安装 BEHAVIOR-1K / OmniGibson
+### 1. 🧱 安装 BEHAVIOR-1K / OmniGibson
 
 先按照官方安装文档完成 BEHAVIOR 环境：
 
@@ -109,7 +109,7 @@ conda activate behavior
 
 如果使用非交互安装参数，请先认真阅读官方 license prompt，再使用自动接受参数。
 
-### 2. 编译本 ROS 2 workspace
+### 2. 🔨 编译本 ROS 2 Workspace
 
 ```bash
 cd autolife_ws
@@ -119,7 +119,7 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-### 3. 检查机器人资产
+### 3. 🤖 检查机器人资产
 
 Autolife USD 资产应位于：
 
@@ -129,11 +129,11 @@ src/asset/usd/
 
 这些机器人 USD 资产体积不大，可以随 GitHub 仓库提交。`*.bak_*`、`world_bak/` 这类本地备份不建议提交。
 
-## 快速启动
+## 🚀 快速启动
 
 编译完成后，打开多个终端分别运行。
 
-### 终端 1：加载 BEHAVIOR 场景和 Autolife
+### 终端 1：🏠 加载 BEHAVIOR 场景和 Autolife
 
 ```bash
 cd autolife_ws
@@ -155,7 +155,7 @@ python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
 - `--no-ros2-sensors`：跳过传感器 bridge graph。
 - `--sensor-manifest-path`：写给 sensor test 使用的运行时 JSON manifest，默认是 `/tmp/autolife_sensor_manifest.json`。
 
-### 终端 2：启动 ROS 2 controllers
+### 终端 2：🎮 启动 ROS 2 Controllers
 
 ```bash
 cd autolife_ws
@@ -175,7 +175,7 @@ ros2 launch autolife_control controllers.launch.py
 - `gripper_controller`
 - `whole_body_controller`
 
-### 终端 3：运行 controller 验证
+### 终端 3：✅ 运行 Controller 验证
 
 ```bash
 cd autolife_ws
@@ -193,7 +193,7 @@ python3 src/autolife_control/test/controller_test_runner.py --controllers whole_
 
 测试配置来自 `src/autolife_control/test/controller_test_config.yaml`，支持 absolute 和 delta target。脚本开始和结束时会通过 whole-body action 接口把机器人 reset 回 0 位。
 
-### 终端 4：运行 sensor 验证
+### 终端 4：📡 运行 Sensor 验证
 
 ```bash
 cd autolife_ws
@@ -205,7 +205,7 @@ python3 src/autolife_sensors/test/sensor_test_runner.py
 
 sensor test 会读取 Isaac sensor bridge 写出的 runtime manifest，检查 topic 是否存在、消息类型是否正确、消息内容是否非空、`header.frame_id` 是否正确，以及 TF 是否可用。默认 manifest 路径是 `/tmp/autolife_sensor_manifest.json`。
 
-### 终端 5：查看 ROS 2 topic 和 RViz
+### 终端 5：🖥️ 查看 ROS 2 Topic 和 RViz
 
 ```bash
 ros2 topic list
@@ -222,7 +222,7 @@ rviz2 -d install/autolife_sensors/share/autolife_sensors/rviz/autolife_sensors.r
 
 传感器 topic 由 Isaac Sim sensor ActionGraph 创建。默认情况下，forehead camera 发布 RGB、depth、point cloud 和 camera info，其他相机发布 RGB 和 camera info。
 
-## 控制接口
+## 🎛️ 控制接口
 
 ```mermaid
 flowchart TB
@@ -245,7 +245,7 @@ flowchart TB
 
 whole-body controller 暴露 `/whole_body_controller/follow_joint_trajectory`，用于协调 whole-body target 和测试脚本中的 reset。mux 会在 whole-body 命令仍然 fresh 的时候给它最高优先级。
 
-## 传感器
+## 📡 传感器
 
 仿真加载脚本会从 Autolife USD/world 资产中复制 sensor overlay，然后为发现到的 sensor 创建 ROS 2 bridge 节点。
 
@@ -261,11 +261,11 @@ whole-body controller 暴露 `/whole_body_controller/follow_joint_trajectory`，
 
 仿真运行后，用 `ros2 topic list` 查看当前 stage 实际创建出来的 topic 名；需要严格验证时使用 sensor runtime test。
 
-## 仓库范围
+## 📦 仓库范围
 
 示例运行所需的 Autolife 机器人资产包含在 `src/asset/usd`。BEHAVIOR-1K 场景/物体资产、BEHAVIOR dataset key、Isaac Sim 和 Conda 环境属于外部依赖，不由本仓库重新分发。运行 `Wainscott_0_int` 前，需要先通过 BEHAVIOR 官方流程安装 BEHAVIOR-1K assets。
 
-## References
+## 📚 References
 
 本项目把 BEHAVIOR-1K / OmniGibson 作为外部仿真依赖使用。
 
