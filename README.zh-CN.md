@@ -135,20 +135,19 @@ conda activate behavior
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
-python src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
-  --scene-model Wainscott_0_int \
-  --quick-load \
-  --steps -1
+python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
+  --scene-model Wainscott_0_int
 ```
 
 常用参数：
 
 - `--headless`：无 GUI 运行 Isaac Sim。
-- `--quick-load`：使用 OmniGibson quick loading，加快启动。
+- `--quick-load`：只加载场景结构类物体，用于快速 smoke test。需要测试真实物体交互时不要加这个参数，因为普通场景物体会被跳过。
 - `--steps 0`：只加载 stage，不推进仿真。
-- `--steps -1`：一直运行，直到手动中断。
+- `--steps -1`：一直运行，直到手动中断。这个就是脚本默认值，正常交互运行时可以不写。
 - `--no-ros2-bridge`：只加载场景，不创建关节 ROS 2 bridge。
 - `--no-ros2-sensors`：跳过传感器 bridge graph。
+- `--sensor-manifest-path`：写给 sensor test 使用的运行时 JSON manifest，默认是 `/tmp/autolife_sensor_manifest.json`。
 
 ### 终端 2：启动 ROS 2 controllers
 
@@ -177,26 +176,45 @@ cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
-python src/autolife_control/test/controller_test_runner.py --interactive
+python3 src/autolife_control/test/controller_test_runner.py --interactive
 ```
 
 只测试某个 controller：
 
 ```bash
-python src/autolife_control/test/controller_test_runner.py --controllers whole_body
+python3 src/autolife_control/test/controller_test_runner.py --controllers whole_body
 ```
 
 测试配置来自 `src/autolife_control/test/controller_test_config.yaml`，支持 absolute 和 delta target。脚本开始和结束时会通过 whole-body action 接口把机器人 reset 回 0 位。
 
-### 终端 4：查看 ROS 2 topic
+### 终端 4：运行 sensor 验证
+
+```bash
+cd autolife_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+python3 src/autolife_sensors/test/sensor_test_runner.py
+```
+
+sensor test 会读取 Isaac sensor bridge 写出的 runtime manifest，检查 topic 是否存在、消息类型是否正确、消息内容是否非空、`header.frame_id` 是否正确，以及 TF 是否可用。默认 manifest 路径是 `/tmp/autolife_sensor_manifest.json`。
+
+### 终端 5：查看 ROS 2 topic 和 RViz
 
 ```bash
 ros2 topic list
 ros2 topic echo /joint_states
 ros2 topic echo /autolife/joint_command
+ros2 topic list | grep /autolife/sensors
 ```
 
-传感器 topic 由 Isaac Sim sensor ActionGraph 创建。默认情况下，forehead camera 发布 RGB、depth 和 point cloud，其他相机只发布 RGB。
+打开预置好的 RViz sensor 视图：
+
+```bash
+rviz2 -d install/autolife_sensors/share/autolife_sensors/rviz/autolife_sensors.rviz
+```
+
+传感器 topic 由 Isaac Sim sensor ActionGraph 创建。默认情况下，forehead camera 发布 RGB、depth、point cloud 和 camera info，其他相机发布 RGB 和 camera info。
 
 ## 控制接口
 
@@ -227,13 +245,15 @@ whole-body controller 暴露 `/whole_body_controller/follow_joint_trajectory`，
 
 预期传感器类型：
 
-- Cameras：所有相机发布 RGB。
-- Forehead camera：额外发布 RGB、depth、point cloud。
+- Cameras：所有相机发布 RGB 和 camera info。
+- Forehead camera：额外发布 RGB、depth、point cloud 和 camera info。
 - IMU：发布 ROS 2 IMU message。
-- LiDAR：发布 ROS 2 LiDAR message。
+- LiDAR：发布前后两个点云。
 - TF：发布机器人和传感器 frame 的 transform tree。
 
-仿真运行后，用 `ros2 topic list` 查看当前 stage 实际创建出来的 topic 名。
+相机消息使用稳定的 optical frame id，例如 `camera_head_forehead_optical_frame`。这些 optical frame 会加在对应 Camera prim 下，并通过 `/tf` 发布，所以 RViz 可以把相机点云转换到 `World`。LiDAR 和 IMU 消息使用对应 link frame，例如 `Link_Lidar_Front` 和 `Link_IMU`。
+
+仿真运行后，用 `ros2 topic list` 查看当前 stage 实际创建出来的 topic 名；需要严格验证时使用 sensor runtime test。
 
 ## 资产和 License 说明
 

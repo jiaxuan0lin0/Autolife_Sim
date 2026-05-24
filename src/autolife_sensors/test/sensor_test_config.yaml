@@ -1,0 +1,21 @@
+global:
+  manifest_path: /tmp/autolife_sensor_manifest.json
+  topic_timeout: 10.0
+  sample_duration: 5.0
+  min_messages: 1
+  require_tf: true
+
+image:
+  require_nonempty_data: true
+  require_nonzero_size: true
+
+camera_info:
+  require_nonzero_size: true
+  require_finite_intrinsics: true
+
+pointcloud:
+  require_nonempty_data: true
+  require_xyz_fields: true
+
+imu:
+  require_finite_values: true

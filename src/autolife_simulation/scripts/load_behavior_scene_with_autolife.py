@@ -27,6 +27,7 @@ DEFAULT_REALSENSE_USD = Path("/data/jiaxuanLin/autolife_ws/src/asset/usd/realsen
 DEFAULT_ROBOT_PRIM_PATH = "/World/autolife"
 DEFAULT_GRAPH_PATH = "/ActionGraph"
 DEFAULT_SENSOR_GRAPH_PATH = "/AutolifeSensorGraph"
+DEFAULT_SENSOR_MANIFEST_PATH = Path("/tmp/autolife_sensor_manifest.json")
 DEFAULT_ROS2_JOINT_COMMAND_TOPIC = "/autolife/joint_command"
 
 
@@ -195,6 +196,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--robot-prim-path", default=DEFAULT_ROBOT_PRIM_PATH)
     parser.add_argument("--graph-path", default=DEFAULT_GRAPH_PATH)
     parser.add_argument("--sensor-graph-path", default=DEFAULT_SENSOR_GRAPH_PATH)
+    parser.add_argument(
+        "--sensor-manifest-path",
+        type=Path,
+        default=DEFAULT_SENSOR_MANIFEST_PATH,
+        help="Runtime JSON manifest written after creating the ROS2 sensor ActionGraph.",
+    )
     parser.add_argument("--ros2-joint-command-topic", default=DEFAULT_ROS2_JOINT_COMMAND_TOPIC)
     parser.add_argument(
         "--robot-position",
@@ -600,6 +607,7 @@ def _setup_ros2_sensor_bridge(
     camera_width: int,
     camera_height: int,
     frame_skip_count: int,
+    manifest_path: Path,
 ) -> dict[str, int]:
     script_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(script_dir))
@@ -617,6 +625,7 @@ def _setup_ros2_sensor_bridge(
             camera_width=camera_width,
             camera_height=camera_height,
             frame_skip_count=frame_skip_count,
+            manifest_path=manifest_path,
         )
 
 
@@ -724,6 +733,7 @@ def main() -> int:
                 camera_width=args.camera_width,
                 camera_height=args.camera_height,
                 frame_skip_count=args.sensor_frame_skip,
+                manifest_path=args.sensor_manifest_path,
             )
             _emit(
                 f"Created ROS2 sensor graph at {args.sensor_graph_path}: "
@@ -734,6 +744,7 @@ def main() -> int:
                 f"lidarOutputs={sensor_graph_counts['lidar_outputs']} "
                 f"tfTargets={sensor_graph_counts['tf_targets']}"
             )
+            _emit(f"Wrote ROS2 sensor manifest: {args.sensor_manifest_path}")
 
     og.sim.play()
 

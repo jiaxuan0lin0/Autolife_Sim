@@ -135,20 +135,19 @@ conda activate behavior
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
-python src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
-  --scene-model Wainscott_0_int \
-  --quick-load \
-  --steps -1
+python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
+  --scene-model Wainscott_0_int
 ```
 
 Useful options:
 
 - `--headless`: run without the Isaac Sim GUI.
-- `--quick-load`: use OmniGibson quick loading for faster startup.
+- `--quick-load`: load only scene structure categories for faster smoke tests. Do not use this for object interaction tests because regular scene objects are skipped.
 - `--steps 0`: load the stage and exit without advancing simulation.
-- `--steps -1`: run until interrupted.
+- `--steps -1`: run until interrupted. This is the default, so it can be omitted for normal interactive use.
 - `--no-ros2-bridge`: load the scene without joint ROS 2 bridge.
 - `--no-ros2-sensors`: skip sensor bridge graph creation.
+- `--sensor-manifest-path`: runtime JSON manifest for sensor tests. The default is `/tmp/autolife_sensor_manifest.json`.
 
 ### Terminal 2: launch ROS 2 controllers
 
@@ -177,26 +176,45 @@ cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
-python src/autolife_control/test/controller_test_runner.py --interactive
+python3 src/autolife_control/test/controller_test_runner.py --interactive
 ```
 
 Run a specific controller:
 
 ```bash
-python src/autolife_control/test/controller_test_runner.py --controllers whole_body
+python3 src/autolife_control/test/controller_test_runner.py --controllers whole_body
 ```
 
 The controller test reads `src/autolife_control/test/controller_test_config.yaml`. It supports absolute and delta targets. The script resets the robot at the beginning and end through the whole-body action interface.
 
-### Terminal 4: inspect ROS 2 topics
+### Terminal 4: run sensor validation
+
+```bash
+cd autolife_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+python3 src/autolife_sensors/test/sensor_test_runner.py
+```
+
+The sensor test reads the runtime manifest emitted by the Isaac sensor bridge and verifies topic existence, message type, message content, `header.frame_id`, and TF availability. The default manifest path is `/tmp/autolife_sensor_manifest.json`.
+
+### Terminal 5: inspect ROS 2 topics and RViz
 
 ```bash
 ros2 topic list
 ros2 topic echo /joint_states
 ros2 topic echo /autolife/joint_command
+ros2 topic list | grep /autolife/sensors
 ```
 
-Sensor topics are created by the Isaac Sim sensor ActionGraph. The forehead camera publishes RGB, depth, and point cloud data; the other cameras publish RGB by default.
+Open the preconfigured RViz sensor view:
+
+```bash
+rviz2 -d install/autolife_sensors/share/autolife_sensors/rviz/autolife_sensors.rviz
+```
+
+Sensor topics are created by the Isaac Sim sensor ActionGraph. The forehead camera publishes RGB, depth, point cloud, and camera info; the other cameras publish RGB and camera info by default.
 
 ## Control Interfaces
 
@@ -227,13 +245,15 @@ The simulation loader copies the sensor overlay authored in the Autolife USD/wor
 
 Expected sensor categories:
 
-- Cameras: RGB for all cameras.
-- Forehead camera: RGB, depth, and point cloud.
+- Cameras: RGB and camera info for all cameras.
+- Forehead camera: RGB, depth, point cloud, and camera info.
 - IMU: ROS 2 IMU message bridge.
-- LiDAR: ROS 2 LiDAR bridge.
+- LiDAR: front and back point cloud bridges.
 - TF: transform tree for robot and sensor frames.
 
-Use `ros2 topic list` after the simulation is running to inspect the exact topic names created for the active stage.
+Camera message frames use stable optical frame ids, such as `camera_head_forehead_optical_frame`. These optical frames are added under the camera prims and published through `/tf`, so point clouds can be transformed into `World` in RViz. LiDAR and IMU messages use their corresponding link frames, such as `Link_Lidar_Front` and `Link_IMU`.
+
+Use `ros2 topic list` after the simulation is running to inspect the exact topic names created for the active stage. Use the sensor runtime test for stricter validation.
 
 ## Asset and License Notes
 

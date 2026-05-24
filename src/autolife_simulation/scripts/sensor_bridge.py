@@ -1,15 +1,30 @@
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
 import omni.graph.core as og
 
-from sensor_config import (
+AUTOLIFE_SENSORS_SOURCE = Path(__file__).resolve().parents[2] / "autolife_sensors"
+if AUTOLIFE_SENSORS_SOURCE.is_dir() and str(AUTOLIFE_SENSORS_SOURCE) not in sys.path:
+    sys.path.insert(0, str(AUTOLIFE_SENSORS_SOURCE))
+
+from autolife_sensors.sensor_config import (
+    TF_MESSAGE_TYPE,
+    TF_TOPIC,
+    camera_optical_frame_id,
+    camera_message_type,
     camera_outputs_for_role,
     camera_topic,
     frame_id_for_sensor,
     include_camera_prim,
     imu_topic,
+    lidar_message_type,
     lidar_outputs_for_role,
     lidar_topic,
     sanitize_name,
     sensor_role_from_path,
+    IMU_MESSAGE_TYPE,
 )
 
 
@@ -21,6 +36,7 @@ def setup_sensor_bridge(
     camera_width=640,
     camera_height=480,
     frame_skip_count=0,
+    manifest_path=None,
 ):
     import usdrt
 
@@ -28,6 +44,7 @@ def setup_sensor_bridge(
     _assign_unique_sensor_names(sensors["cameras"])
     _assign_unique_sensor_names(sensors["imus"])
     _assign_unique_sensor_names(sensors["lidars"])
+    _add_camera_optical_frames(stage, sensors["cameras"])
 
     create_nodes = [
         ("OnPlaybackTick", "omni.graph.action.OnPlaybackTick"),
@@ -43,7 +60,7 @@ def setup_sensor_bridge(
         set_values.extend(
             [
                 ("PublishTF.inputs:targetPrims", [usdrt.Sdf.Path(path) for path in tf_targets]),
-                ("PublishTF.inputs:topicName", "/tf"),
+                ("PublishTF.inputs:topicName", TF_TOPIC),
                 ("PublishTF.inputs:queueSize", 10),
             ]
         )
@@ -60,6 +77,7 @@ def setup_sensor_bridge(
     camera_output_count = 0
     for camera in sensors["cameras"]:
         sensor_name = camera["sensor_name"]
+        frame_id = _record_frame_id(camera)
         node_suffix = _node_suffix(sensor_name)
         render_node = f"CreateRenderProduct_{node_suffix}"
         camera_path = camera["path"]
@@ -81,7 +99,7 @@ def setup_sensor_bridge(
                 set_values.extend(
                     [
                         (f"{node_name}.inputs:topicName", camera_topic(sensor_name, output_type)),
-                        (f"{node_name}.inputs:frameId", frame_id_for_sensor(sensor_name)),
+                        (f"{node_name}.inputs:frameId", frame_id),
                         (f"{node_name}.inputs:frameSkipCount", int(frame_skip_count)),
                         (f"{node_name}.inputs:queueSize", 10),
                     ]
@@ -103,7 +121,7 @@ def setup_sensor_bridge(
                     [
                         (f"{node_name}.inputs:topicName", camera_topic(sensor_name, output_type)),
                         (f"{node_name}.inputs:type", output_type),
-                        (f"{node_name}.inputs:frameId", frame_id_for_sensor(sensor_name)),
+                        (f"{node_name}.inputs:frameId", frame_id),
                         (f"{node_name}.inputs:frameSkipCount", int(frame_skip_count)),
                         (f"{node_name}.inputs:queueSize", 10),
                     ]
@@ -190,6 +208,17 @@ def setup_sensor_bridge(
             lidar_output_count += 1
 
     if len(create_nodes) == 3:
+        _write_manifest(
+            manifest_path=manifest_path,
+            graph_path=graph_path,
+            robot_prim_path=robot_prim_path,
+            robot_articulation_path=robot_articulation_path,
+            camera_width=camera_width,
+            camera_height=camera_height,
+            frame_skip_count=frame_skip_count,
+            sensors=sensors,
+            tf_targets=tf_targets,
+        )
         return {
             "cameras": 0,
             "camera_outputs": 0,
@@ -209,6 +238,18 @@ def setup_sensor_bridge(
         },
     )
 
+    _write_manifest(
+        manifest_path=manifest_path,
+        graph_path=graph_path,
+        robot_prim_path=robot_prim_path,
+        robot_articulation_path=robot_articulation_path,
+        camera_width=camera_width,
+        camera_height=camera_height,
+        frame_skip_count=frame_skip_count,
+        sensors=sensors,
+        tf_targets=tf_targets,
+    )
+
     return {
         "cameras": len(sensors["cameras"]),
         "camera_outputs": camera_output_count,
@@ -218,6 +259,152 @@ def setup_sensor_bridge(
         "lidar_outputs": lidar_output_count,
         "tf_targets": len(tf_targets),
     }
+
+
+def _add_camera_optical_frames(stage, cameras):
+    from pxr import UsdGeom
+
+    for camera in cameras:
+        frame_id = camera_optical_frame_id(camera["sensor_name"])
+        frame_path = f"{camera['path']}/{frame_id}"
+        UsdGeom.Camera.Define(stage, frame_path)
+        camera["frame_id"] = frame_id
+        camera["frame_path"] = frame_path
+
+
+def _write_manifest(
+    manifest_path,
+    graph_path,
+    robot_prim_path,
+    robot_articulation_path,
+    camera_width,
+    camera_height,
+    frame_skip_count,
+    sensors,
+    tf_targets,
+):
+    if manifest_path is None:
+        return
+
+    path = Path(manifest_path).expanduser()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    manifest = _build_manifest(
+        graph_path=graph_path,
+        robot_prim_path=robot_prim_path,
+        robot_articulation_path=robot_articulation_path,
+        camera_width=camera_width,
+        camera_height=camera_height,
+        frame_skip_count=frame_skip_count,
+        sensors=sensors,
+        tf_targets=tf_targets,
+    )
+    path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _build_manifest(
+    graph_path,
+    robot_prim_path,
+    robot_articulation_path,
+    camera_width,
+    camera_height,
+    frame_skip_count,
+    sensors,
+    tf_targets,
+):
+    return {
+        "schema_version": 1,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "graph_path": graph_path,
+        "robot_prim_path": robot_prim_path,
+        "robot_articulation_path": robot_articulation_path,
+        "camera_width": int(camera_width),
+        "camera_height": int(camera_height),
+        "frame_skip_count": int(frame_skip_count),
+        "tf": {
+            "topic": TF_TOPIC,
+            "type": TF_MESSAGE_TYPE,
+            "target_prims": list(tf_targets),
+            "frame_ids": _frame_ids_for_records(sensors),
+        },
+        "sensors": (
+            [_camera_manifest(record) for record in sensors["cameras"]]
+            + [_imu_manifest(record) for record in sensors["imus"]]
+            + [_lidar_manifest(record) for record in sensors["lidars"]]
+        ),
+    }
+
+
+def _camera_manifest(record):
+    sensor_name = record["sensor_name"]
+    frame_id = _record_frame_id(record)
+    return {
+        "kind": "camera",
+        "name": sensor_name,
+        "role": record["role"],
+        "prim_path": record["path"],
+        "frame_id": frame_id,
+        "frame_prim_path": record.get("frame_path", record["path"]),
+        "outputs": [
+            {
+                "name": output_type,
+                "topic": camera_topic(sensor_name, output_type),
+                "type": camera_message_type(output_type),
+                "frame_id": frame_id,
+            }
+            for output_type in camera_outputs_for_role(record["role"])
+        ],
+    }
+
+
+def _imu_manifest(record):
+    sensor_name = record["sensor_name"]
+    return {
+        "kind": "imu",
+        "name": sensor_name,
+        "role": record["role"],
+        "prim_path": record["path"],
+        "frame_id": frame_id_for_sensor(sensor_name),
+        "outputs": [
+            {
+                "name": "imu",
+                "topic": imu_topic(sensor_name),
+                "type": IMU_MESSAGE_TYPE,
+                "frame_id": frame_id_for_sensor(sensor_name),
+            }
+        ],
+    }
+
+
+def _lidar_manifest(record):
+    sensor_name = record["sensor_name"]
+    return {
+        "kind": "lidar",
+        "name": sensor_name,
+        "role": record["role"],
+        "prim_path": record["path"],
+        "frame_id": frame_id_for_sensor(sensor_name),
+        "outputs": [
+            {
+                "name": output_type,
+                "topic": lidar_topic(sensor_name, output_type),
+                "type": lidar_message_type(output_type),
+                "frame_id": frame_id_for_sensor(sensor_name),
+            }
+            for output_type in lidar_outputs_for_role(record["role"])
+        ],
+    }
+
+
+def _frame_ids_for_records(sensors):
+    frame_ids = []
+    for group_name in ("cameras", "imus", "lidars"):
+        for record in sensors[group_name]:
+            frame_ids.append(_record_frame_id(record))
+    return _dedupe(frame_ids)
+
+
+def _record_frame_id(record):
+    return record.get("frame_id", frame_id_for_sensor(record["sensor_name"]))
 
 
 def discover_sensors(stage, robot_prim_path):
@@ -270,13 +457,18 @@ def _assign_unique_sensor_names(records):
         if count == 0:
             record["sensor_name"] = base_name
         else:
-            record["sensor_name"] = f"{base_name}_{sanitize_name(record['path'].rsplit('/', 1)[-1])}"
+            leaf_name = record["path"].rsplit("/", 1)[-1]
+            record["sensor_name"] = f"{base_name}_{sanitize_name(leaf_name)}"
         seen[base_name] = count + 1
 
 
 def _tf_targets(sensors, robot_articulation_path):
     targets = [robot_articulation_path]
-    for group_name in ("cameras", "imus", "lidars"):
+    targets.extend(
+        record.get("frame_path", record["path"])
+        for record in sensors["cameras"]
+    )
+    for group_name in ("imus", "lidars"):
         targets.extend(record["path"] for record in sensors[group_name])
     return _dedupe(targets)
 
