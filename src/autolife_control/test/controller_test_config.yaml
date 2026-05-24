@@ -1,0 +1,112 @@
+global:
+  joint_states_topic: /joint_states
+  mux_output_topic: /autolife/joint_command
+  initial_state_timeout: 10.0
+  action_server_timeout: 5.0
+  action_result_timeout: 8.0
+  topic_subscriber_timeout: 5.0
+  motion_timeout: 5.0
+  min_motion_delta: 0.003
+  pause_between_steps: 1.0
+  reset_at_start: true
+  reset_before_each: false
+  reset_at_end: true
+  reset_action: /whole_body_controller/follow_joint_trajectory
+  reset_duration: 2.5
+  reset_timeout: 4.0
+  reset_tolerance: 0.03
+  restore_after_each: false
+  restore_on_failure: false
+  restore_duration: 1.5
+  publish_repeats: 1
+  publish_repeat_period: 0.1
+
+controllers:
+  base:
+    enabled: true
+    cmd_vel_topic: /cmd_vel
+    duration: 1.5
+    restore_after_each: false
+    command:
+      linear_x: 0.05
+      linear_y: 0.0
+      angular_z: 0.0
+
+  head:
+    enabled: true
+    topic: /head/joint_trajectory
+    mode: delta
+    duration: 2.0
+    deltas:
+      Joint_Neck_Yaw: 0.2
+      Joint_Neck_Pitch: 0.08
+
+  torso:
+    enabled: true
+    topic: /torso/joint_trajectory
+    mode: delta
+    duration: 2.0
+    deltas:
+      Joint_Waist_Yaw: 0.08
+      Joint_Waist_Pitch: 0.05
+
+  left_arm:
+    enabled: true
+    action: /left_arm_controller/follow_joint_trajectory
+    mode: delta
+    duration: 2.5
+    deltas:
+      Joint_Left_Shoulder_Outer: -0.08
+      Joint_Left_Elbow: 0.12
+      Joint_Left_Wrist_Upper: 0.08
+
+  right_arm:
+    enabled: true
+    action: /right_arm_controller/follow_joint_trajectory
+    mode: delta
+    duration: 2.5
+    deltas:
+      Joint_Right_Shoulder_Outer: 0.08
+      Joint_Right_Elbow: -0.12
+      Joint_Right_Wrist_Upper: -0.08
+
+  gripper:
+    enabled: true
+    left_action: /left_gripper/gripper_command
+    right_action: /right_gripper/gripper_command
+    command_open_position: 1.0
+    command_closed_position: 0.0
+    joint_open_position: 1.0
+    joint_closed_position: 0.0
+    joint_tolerance: 0.03
+    max_effort: 0.0
+    action_result_timeout: 6.0
+    sequence:
+      - name: close
+        left: 0.0
+        right: 0.0
+      - name: open
+        left: 1.0
+        right: 1.0
+
+  whole_body:
+    enabled: true
+    command_mode: action
+    topic: /autolife/command/whole_body
+    action: /whole_body_controller/follow_joint_trajectory
+    mode: absolute
+    duration: 3.5
+    publish_rate_hz: 50.0
+    target_tolerance: 0.05
+    target_timeout: 4.0
+    positions:
+      Joint_Neck_Yaw: -0.35
+      Joint_Neck_Pitch: 0.15
+      Joint_Waist_Yaw: -0.18
+      Joint_Waist_Pitch: 0.10
+      Joint_Left_Shoulder_Outer: -0.18
+      Joint_Right_Shoulder_Outer: 0.18
+      Joint_Left_Elbow: 0.30
+      Joint_Right_Elbow: -0.30
+      Joint_Left_Wrist_Upper: 0.18
+      Joint_Right_Wrist_Upper: -0.18

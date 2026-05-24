@@ -31,6 +31,8 @@ setup(
             'head_controller = autolife_control.head_controller:main',
             'gripper_controller = autolife_control.gripper_controller:main',
             'arm_controller = autolife_control.arm_controller:main',
+            'whole_body_controller = autolife_control.whole_body_controller:main',
+            'joint_command_mux = autolife_control.joint_command_mux:main',
         ],
     },
 )

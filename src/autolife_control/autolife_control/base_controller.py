@@ -7,16 +7,15 @@ from geometry_msgs.msg import Twist, TransformStamped
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import JointState
 from tf2_ros import TransformBroadcaster
-
-BASE_JOINTS = (
-    "Joint_Ground_Vehicle_X",
-    "Joint_Ground_Vehicle_Y",
-    "Joint_Ground_Vehicle_Z",
-)
+from autolife_control.joint_groups import BASE_JOINTS, COMMAND_TOPICS, JOINT_STATES_TOPIC
 
 class BaseController(Node):
     def __init__(self):
         super().__init__('base_controller')
+        self.joint_states_topic = self.declare_parameter('joint_states_topic', JOINT_STATES_TOPIC).value
+        self.joint_command_topic = self.declare_parameter(
+            'joint_command_topic', COMMAND_TOPICS['base']
+        ).value
         self.cmd_vel_timeout = self.declare_parameter('cmd_vel_timeout', 0.5).value
         self.max_control_dt = self.declare_parameter('max_control_dt', 0.1).value
         self.odom_frame = self.declare_parameter('odom_frame', 'odom').value
@@ -43,11 +42,11 @@ class BaseController(Node):
         self.dt = 1.0 / 30.0  # control frequency, set to 30 Hz
 
         # subscribe
-        self.create_subscription(JointState, "/joint_states", self.joint_states_cb, 10)
+        self.create_subscription(JointState, self.joint_states_topic, self.joint_states_cb, 10)
         self.create_subscription(Twist, "/cmd_vel", self.cmd_vel_cb, 10)
 
         # publish
-        self.joint_cmd_pub = self.create_publisher(JointState, '/joint_command', 10)
+        self.joint_cmd_pub = self.create_publisher(JointState, self.joint_command_topic, 10)
         self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
         self.tf_broadcaster = TransformBroadcaster(self) if self.publish_tf else None
 
@@ -143,7 +142,7 @@ class BaseController(Node):
 
         # publish the joint command (position + velocity)
         cmd = JointState()
-        cmd.name = ['Joint_Ground_Vehicle_X', 'Joint_Ground_Vehicle_Y', 'Joint_Ground_Vehicle_Z']
+        cmd.name = list(BASE_JOINTS)
         cmd.position = [self.target_x, self.target_y, self.target_yaw]
         cmd.velocity = [world_vx, world_vy, wz]
         self.joint_cmd_pub.publish(cmd)

@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'autolife_simulation'
+package_name = 'autolife_sensors'
 
 setup(
     name=package_name,
@@ -13,8 +13,8 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='JiaxuanLin',
-    maintainer_email='jiaxuan0lin0@gmail.com',
+    maintainer='sutai',
+    maintainer_email='jiaxuan0Lin0@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     extras_require={
@@ -24,8 +24,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'test_base_drive_response = autolife_simulation.base_drive_response_test:main',
-            'test_joint_drive_response = autolife_simulation.joint_drive_response_test:main',
         ],
     },
 )

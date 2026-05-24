@@ -5,6 +5,12 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='autolife_control',
+            executable='joint_command_mux',
+            name='joint_command_mux',
+            output='screen',
+        ),
+        Node(
+            package='autolife_control',
             executable='base_controller',
             name='base_controller',
             output='screen',
@@ -31,6 +37,12 @@ def generate_launch_description():
             package='autolife_control',
             executable='head_controller',
             name='head_controller',
+            output='screen',
+        ),
+        Node(
+            package='autolife_control',
+            executable='whole_body_controller',
+            name='whole_body_controller',
             output='screen',
         )
     ])

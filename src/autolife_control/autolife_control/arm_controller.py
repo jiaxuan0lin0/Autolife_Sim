@@ -1,4 +1,5 @@
 import math
+import threading
 import time
 
 import rclpy
@@ -9,50 +10,48 @@ from rclpy.node import Node
 from rclpy.action import ActionServer
 from sensor_msgs.msg import JointState
 from control_msgs.action import FollowJointTrajectory
-
-LEFT_ARM_JOINTS = [
-    "Joint_Left_Shoulder_Inner",
-    "Joint_Left_Shoulder_Outer",
-    "Joint_Left_UpperArm",
-    "Joint_Left_Elbow",
-    "Joint_Left_Forearm",
-    "Joint_Left_Wrist_Upper",
-    "Joint_Left_Wrist_Lower",
-]
-
-RIGHT_ARM_JOINTS = [
-    "Joint_Right_Shoulder_Inner",
-    "Joint_Right_Shoulder_Outer",
-    "Joint_Right_UpperArm",
-    "Joint_Right_Elbow",
-    "Joint_Right_Forearm",
-    "Joint_Right_Wrist_Upper",
-    "Joint_Right_Wrist_Lower",
-]
+from autolife_control.joint_groups import (
+    ARM_JOINTS,
+    COMMAND_TOPICS,
+    JOINT_STATES_TOPIC,
+    LEFT_ARM_JOINTS,
+    RIGHT_ARM_JOINTS,
+)
+from autolife_control.utils import auto_compute_velocities, cubic_hermite
 
 class ArmController(Node):
     def __init__(self):
         super().__init__('arm_controller')
         self.callback_group = ReentrantCallbackGroup()
+        self.joint_states_topic = self.declare_parameter('joint_states_topic', JOINT_STATES_TOPIC).value
+        self.joint_command_topic = self.declare_parameter(
+            'joint_command_topic', COMMAND_TOPICS['arm']
+        ).value
         self.goal_tolerance = self.declare_parameter('goal_tolerance', 0.03).value
         self.goal_timeout = self.declare_parameter('goal_timeout', 5.0).value
-
-        ALL_ARM_JOINTS = LEFT_ARM_JOINTS + RIGHT_ARM_JOINTS
+        self.initial_state_timeout = self.declare_parameter('initial_state_timeout', 3.0).value
+        self.publish_rate_hz = float(self.declare_parameter('publish_rate_hz', 100.0).value)
+        self.publish_velocity_commands = bool(
+            self.declare_parameter('publish_velocity_commands', False).value
+        )
+        if self.publish_rate_hz <= 0.0:
+            raise ValueError('publish_rate_hz must be positive')
 
         # current state
-        self.current_positions = {j:0.0 for j in ALL_ARM_JOINTS}
-        self.current_velocities = {j:0.0 for j in ALL_ARM_JOINTS}
+        self.current_positions = {j:0.0 for j in ARM_JOINTS}
+        self.current_velocities = {j:0.0 for j in ARM_JOINTS}
         self.seen_positions = set()
+        self.state_lock = threading.Lock()
 
         # subscribe & publish
         self.create_subscription(
             JointState,
-            '/joint_states',
+            self.joint_states_topic,
             self.joint_state_cb,
             10,
             callback_group=self.callback_group,
         )
-        self.joint_cmd_pub = self.create_publisher(JointState, '/joint_command', 10)
+        self.joint_cmd_pub = self.create_publisher(JointState, self.joint_command_topic, 10)
 
         # left arm action server
         self._left_action = ActionServer(
@@ -71,13 +70,14 @@ class ArmController(Node):
         )
 
     def joint_state_cb(self,msg):
-        for name, position in zip(msg.name, msg.position):
-            if name in self.current_positions:
-                self.current_positions[name] = position
-                self.seen_positions.add(name)
-        for name, velocity in zip(msg.name, msg.velocity):
-            if name in self.current_velocities:
-                self.current_velocities[name] = velocity
+        with self.state_lock:
+            for name, position in zip(msg.name, msg.position):
+                if name in self.current_positions:
+                    self.current_positions[name] = position
+                    self.seen_positions.add(name)
+            for name, velocity in zip(msg.name, msg.velocity):
+                if name in self.current_velocities:
+                    self.current_velocities[name] = velocity
 
     def reject_goal(self, goal_handle, error_code, error_string):
         self.get_logger().warn(error_string)
@@ -132,11 +132,20 @@ class ArmController(Node):
             return self.reject_goal(goal_handle, error_code, error_string)
 
         start_time = time.monotonic()
-        feedback = FollowJointTrajectory.Feedback()
         joint_names = list(trajectory.joint_names)
+        state_ready, missing = self.wait_for_joint_states(joint_names)
+        if not state_ready:
+            return self.reject_goal(
+                goal_handle,
+                FollowJointTrajectory.Result.INVALID_GOAL,
+                f'Arm goal failed because joint states were not received for: {missing}',
+            )
+
+        traj_data = self.build_trajectory_data(trajectory)
+        period = 1.0 / self.publish_rate_hz
         last_command = None
 
-        for point in trajectory.points:
+        while True:
             if goal_handle.is_cancel_requested:
                 goal_handle.canceled()
                 result = FollowJointTrajectory.Result()
@@ -144,39 +153,109 @@ class ArmController(Node):
                 result.error_string = 'Trajectory canceled'
                 return result
 
-            target_time = point.time_from_start.sec + point.time_from_start.nanosec / 1e9
+            elapsed = time.monotonic() - start_time
+            positions, velocities = self.sample_trajectory(traj_data, elapsed)
+            last_command = self.publish_command(joint_names, positions, velocities)
+            self.publish_feedback(goal_handle, joint_names, positions)
 
-            # wait tiem to execute
-            while True:
-                elapsed = time.monotonic() - start_time
-                if elapsed >= target_time:
-                    break
-                time.sleep(0.01)
-            
-            # send execute command
-            cmd = JointState()
-            cmd.header.stamp = self.get_clock().now().to_msg()
-            cmd.name = joint_names
-            cmd.position = list(point.positions[:len(joint_names)])
-            if point.velocities:
-                cmd.velocity = list(point.velocities[:len(joint_names)])
-            self.joint_cmd_pub.publish(cmd)
-            last_command = cmd
+            if elapsed >= traj_data['times'][-1]:
+                break
 
-            # send feedback
-            feedback.joint_names = joint_names
-            feedback.desired.positions = list(cmd.position)
-            feedback.actual.positions = [self.current_positions.get(j, 0.0) for j in joint_names]
-            feedback.error.positions = [
-                d - a for d, a in zip(feedback.desired.positions, feedback.actual.positions)
-            ]
-            goal_handle.publish_feedback(feedback)
+            time.sleep(period)
 
+        return self.wait_for_goal(goal_handle, joint_names, last_command, period)
+
+    def build_trajectory_data(self, trajectory):
+        joint_names = list(trajectory.joint_names)
+        times = [
+            point.time_from_start.sec + point.time_from_start.nanosec / 1e9
+            for point in trajectory.points
+        ]
+        positions = {}
+        velocities = {}
+
+        for index, joint_name in enumerate(joint_names):
+            joint_positions = [point.positions[index] for point in trajectory.points]
+            positions[joint_name] = joint_positions
+
+            has_all_velocities = all(len(point.velocities) > index for point in trajectory.points)
+            if has_all_velocities:
+                velocities[joint_name] = [point.velocities[index] for point in trajectory.points]
+            else:
+                velocities[joint_name] = auto_compute_velocities(joint_positions, times)
+
+        return {
+            'joint_names': joint_names,
+            'times': times,
+            'positions': positions,
+            'velocities': velocities,
+            'start_positions': self.get_actual_position_map(joint_names),
+        }
+
+    def sample_trajectory(self, traj_data, elapsed):
+        joint_names = traj_data['joint_names']
+        times = traj_data['times']
+        positions_by_joint = traj_data['positions']
+        velocities_by_joint = traj_data['velocities']
+
+        if elapsed >= times[-1]:
+            positions = [positions_by_joint[joint][-1] for joint in joint_names]
+            velocities = [0.0 for _ in joint_names]
+            return positions, velocities
+
+        if elapsed <= times[0]:
+            if times[0] <= 0.0:
+                positions = [positions_by_joint[joint][0] for joint in joint_names]
+                velocities = [velocities_by_joint[joint][0] for joint in joint_names]
+                return positions, velocities
+
+            sampled_positions = []
+            sampled_velocities = []
+            start_positions = traj_data['start_positions']
+            for joint in joint_names:
+                pos, vel = cubic_hermite(
+                    elapsed,
+                    0.0,
+                    times[0],
+                    start_positions[joint],
+                    positions_by_joint[joint][0],
+                    0.0,
+                    velocities_by_joint[joint][0],
+                )
+                sampled_positions.append(pos)
+                sampled_velocities.append(vel)
+            return sampled_positions, sampled_velocities
+
+        segment = 1
+        for index in range(1, len(times)):
+            if elapsed < times[index]:
+                segment = index
+                break
+
+        sampled_positions = []
+        sampled_velocities = []
+        for joint in joint_names:
+            pos, vel = cubic_hermite(
+                elapsed,
+                times[segment - 1],
+                times[segment],
+                positions_by_joint[joint][segment - 1],
+                positions_by_joint[joint][segment],
+                velocities_by_joint[joint][segment - 1],
+                velocities_by_joint[joint][segment],
+            )
+            sampled_positions.append(pos)
+            sampled_velocities.append(vel)
+
+        return sampled_positions, sampled_velocities
+
+    def wait_for_goal(self, goal_handle, joint_names, final_command, period):
         deadline = time.monotonic() + float(self.goal_timeout)
-        desired = list(last_command.position) if last_command is not None else []
+        desired = list(final_command.position) if final_command is not None else []
+        feedback = FollowJointTrajectory.Feedback()
         while time.monotonic() < deadline:
-            missing_joints = [joint for joint in joint_names if joint not in self.seen_positions]
-            actual = [self.current_positions.get(joint, 0.0) for joint in joint_names]
+            missing_joints = self.missing_joint_states(joint_names)
+            actual = self.get_actual_positions(joint_names)
             errors = [desired_value - actual_value for desired_value, actual_value in zip(desired, actual)]
 
             feedback.joint_names = joint_names
@@ -192,22 +271,65 @@ class ArmController(Node):
                 goal_handle.succeed()
                 return result
 
-            if last_command is not None:
-                last_command.header.stamp = self.get_clock().now().to_msg()
-                self.joint_cmd_pub.publish(last_command)
-            time.sleep(0.05)
+            if final_command is not None:
+                final_command.header.stamp = self.get_clock().now().to_msg()
+                self.joint_cmd_pub.publish(final_command)
+            time.sleep(min(period, 0.05))
 
-        actual = [self.current_positions.get(joint, 0.0) for joint in joint_names]
+        actual = self.get_actual_positions(joint_names)
         errors = [desired_value - actual_value for desired_value, actual_value in zip(desired, actual)]
         error_string = f'Arm goal tolerance violated; final errors: {dict(zip(joint_names, errors))}'
-        if any(joint not in self.seen_positions for joint in joint_names):
-            missing = [joint for joint in joint_names if joint not in self.seen_positions]
+        missing = self.missing_joint_states(joint_names)
+        if missing:
             error_string = f'Arm goal failed because joint states were not received for: {missing}'
         return self.reject_goal(
             goal_handle,
             FollowJointTrajectory.Result.GOAL_TOLERANCE_VIOLATED,
             error_string,
         )
+
+    def publish_command(self, joint_names, positions, velocities):
+        cmd = JointState()
+        cmd.header.stamp = self.get_clock().now().to_msg()
+        cmd.name = list(joint_names)
+        cmd.position = list(positions)
+        if self.publish_velocity_commands:
+            cmd.velocity = list(velocities)
+        self.joint_cmd_pub.publish(cmd)
+        return cmd
+
+    def publish_feedback(self, goal_handle, joint_names, desired_positions):
+        actual = self.get_actual_positions(joint_names)
+        feedback = FollowJointTrajectory.Feedback()
+        feedback.joint_names = list(joint_names)
+        feedback.desired.positions = list(desired_positions)
+        feedback.actual.positions = actual
+        feedback.error.positions = [
+            desired - actual_position
+            for desired, actual_position in zip(desired_positions, actual)
+        ]
+        goal_handle.publish_feedback(feedback)
+
+    def wait_for_joint_states(self, joint_names):
+        deadline = time.monotonic() + float(self.initial_state_timeout)
+        while time.monotonic() < deadline:
+            missing = self.missing_joint_states(joint_names)
+            if not missing:
+                return True, []
+            time.sleep(0.02)
+        return False, self.missing_joint_states(joint_names)
+
+    def missing_joint_states(self, joint_names):
+        with self.state_lock:
+            return [joint for joint in joint_names if joint not in self.seen_positions]
+
+    def get_actual_positions(self, joint_names):
+        with self.state_lock:
+            return [self.current_positions.get(joint, 0.0) for joint in joint_names]
+
+    def get_actual_position_map(self, joint_names):
+        with self.state_lock:
+            return {joint: self.current_positions[joint] for joint in joint_names}
 
 
 def spin_node(node):

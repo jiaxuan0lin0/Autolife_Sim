@@ -9,14 +9,17 @@ from rclpy.node import Node
 from rclpy.action import ActionServer
 from sensor_msgs.msg import JointState
 from control_msgs.action import GripperCommand
-
-GRIPPER_JOINTS = ("Joint_Left_Gripper", "Joint_Right_Gripper")
+from autolife_control.joint_groups import COMMAND_TOPICS, GRIPPER_JOINTS, JOINT_STATES_TOPIC
 
 class GripperController(Node):
     def __init__(self):
         super().__init__('gripper_controller')
         self.callback_group = ReentrantCallbackGroup()
-        self.goal_tolerance = self.declare_parameter('goal_tolerance', 0.01).value
+        self.joint_states_topic = self.declare_parameter('joint_states_topic', JOINT_STATES_TOPIC).value
+        self.joint_command_topic = self.declare_parameter(
+            'joint_command_topic', COMMAND_TOPICS['gripper']
+        ).value
+        self.goal_tolerance = self.declare_parameter('goal_tolerance', 0.03).value
         self.goal_timeout = self.declare_parameter('goal_timeout', 5.0).value
         self.command_open_position = self.declare_parameter('command_open_position', 1.0).value
         self.command_closed_position = self.declare_parameter('command_closed_position', 0.0).value
@@ -28,12 +31,12 @@ class GripperController(Node):
 
         self.create_subscription(
             JointState,
-            '/joint_states',
+            self.joint_states_topic,
             self.joint_state_cb,
             10,
             callback_group=self.callback_group,
         )
-        self.joint_cmd_pub = self.create_publisher(JointState, '/joint_command', 10)
+        self.joint_cmd_pub = self.create_publisher(JointState, self.joint_command_topic, 10)
 
         self._left_action = ActionServer(
             self, 
@@ -147,7 +150,7 @@ class GripperController(Node):
             goal_handle.publish_feedback(feedback)
 
             # reach goal
-            if joint_name in self.seen_positions and error < tolerance:
+            if joint_name in self.seen_positions and error <= tolerance:
                 break
 
             # time out 
@@ -165,7 +168,7 @@ class GripperController(Node):
         result = GripperCommand.Result()
         current = self.current_positions.get(joint_name, 0.0)
         result.position = self.joint_to_command_position(current)
-        result.reached_goal = abs(target_pos - current) < tolerance
+        result.reached_goal = abs(target_pos - current) <= tolerance
         result.stalled = not result.reached_goal
 
         if result.reached_goal:

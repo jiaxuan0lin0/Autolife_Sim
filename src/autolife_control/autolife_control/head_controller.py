@@ -5,18 +5,22 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
+from autolife_control.joint_groups import COMMAND_TOPICS, HEAD_JOINTS, JOINT_STATES_TOPIC
 from autolife_control.utils import cubic_hermite, auto_compute_velocities
-
-HEAD_JOINTS = [
-    "Joint_Neck_Roll",
-    "Joint_Neck_Pitch",
-    "Joint_Neck_Yaw",
-]
-
 
 class HeadController(Node):
     def __init__(self):
         super().__init__('head_controller')
+        self.joint_states_topic = self.declare_parameter('joint_states_topic', JOINT_STATES_TOPIC).value
+        self.joint_command_topic = self.declare_parameter(
+            'joint_command_topic', COMMAND_TOPICS['head']
+        ).value
+        self.control_rate_hz = float(self.declare_parameter('control_rate_hz', 100.0).value)
+        if self.control_rate_hz <= 0.0:
+            raise ValueError('control_rate_hz must be positive')
+        self.publish_velocity_commands = bool(
+            self.declare_parameter('publish_velocity_commands', False).value
+        )
 
         # current state
         self.current_positions = {j: 0.0 for j in HEAD_JOINTS}
@@ -31,20 +35,20 @@ class HeadController(Node):
         # trajectory execution state
         self.trajectory = None
         self.traj_start_time = None
+        self.traj_start_positions = {}
         self.traj_times = []
         self.traj_positions = {}
         self.traj_velocities = {}
 
         # subscribe
-        self.create_subscription(JointState, '/joint_states', self.joint_state_cb, 10)
+        self.create_subscription(JointState, self.joint_states_topic, self.joint_state_cb, 10)
         self.create_subscription(JointTrajectory, '/head/joint_trajectory',
                                  self.trajectory_cb, 10)
 
         # publish
-        self.joint_cmd_pub = self.create_publisher(JointState, '/joint_command', 10)
+        self.joint_cmd_pub = self.create_publisher(JointState, self.joint_command_topic, 10)
 
-        # control loop at 30 Hz
-        self.dt = 1.0 / 30.0
+        self.dt = 1.0 / self.control_rate_hz
         self.create_timer(self.dt, self.control_loop)
 
     def joint_state_cb(self, msg):
@@ -124,6 +128,10 @@ class HeadController(Node):
         self.traj_times = traj_times
         self.traj_positions = traj_positions
         self.traj_velocities = traj_velocities
+        self.traj_start_positions = {
+            jn: self.current_positions[jn]
+            for jn in joint_names
+        }
         self.trajectory = msg
         self.traj_start_time = self.get_clock().now()
         self.get_logger().info(
@@ -158,7 +166,7 @@ class HeadController(Node):
                     velocities = self.traj_velocities[jn]
 
                     if seg == 0:
-                        p0 = self.current_positions[jn]
+                        p0 = self.traj_start_positions.get(jn, self.current_positions[jn])
                         p1 = positions[0]
                         v0 = 0.0
                         v1 = velocities[0]
@@ -178,7 +186,8 @@ class HeadController(Node):
         cmd = JointState()
         cmd.name = list(HEAD_JOINTS)
         cmd.position = [self.target_positions[j] for j in HEAD_JOINTS]
-        cmd.velocity = [self.target_velocities[j] for j in HEAD_JOINTS]
+        if self.publish_velocity_commands:
+            cmd.velocity = [self.target_velocities[j] for j in HEAD_JOINTS]
         self.joint_cmd_pub.publish(cmd)
 
 

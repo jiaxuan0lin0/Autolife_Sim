@@ -5,18 +5,16 @@ from rclpy.executors import ExternalShutdownException
 from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory
+from autolife_control.joint_groups import COMMAND_TOPICS, JOINT_STATES_TOPIC, TORSO_JOINTS
 from autolife_control.utils import cubic_hermite, auto_compute_velocities
-
-TORSO_JOINTS = [
-    "Joint_Ankle",
-    "Joint_Knee",
-    "Joint_Waist_Pitch",
-    "Joint_Waist_Yaw",
-]
 
 class TorsoController(Node):
     def __init__(self):
         super().__init__('torso_controller')
+        self.joint_states_topic = self.declare_parameter('joint_states_topic', JOINT_STATES_TOPIC).value
+        self.joint_command_topic = self.declare_parameter(
+            'joint_command_topic', COMMAND_TOPICS['torso']
+        ).value
 
         # current state
         self.current_positions = {j: 0.0 for j in TORSO_JOINTS}
@@ -36,12 +34,12 @@ class TorsoController(Node):
         self.traj_velocities = {}   # {joint_name: [vel at each waypoint]}
 
         # subscribe
-        self.create_subscription(JointState, '/joint_states', self.joint_state_cb, 10)
+        self.create_subscription(JointState, self.joint_states_topic, self.joint_state_cb, 10)
         self.create_subscription(JointTrajectory, '/torso/joint_trajectory',
                                  self.trajectory_cb, 10)
 
         # publish
-        self.joint_cmd_pub = self.create_publisher(JointState, '/joint_command', 10)
+        self.joint_cmd_pub = self.create_publisher(JointState, self.joint_command_topic, 10)
 
         # control loop at 30 Hz
         self.dt = 1.0 / 30.0
