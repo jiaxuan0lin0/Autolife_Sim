@@ -8,6 +8,10 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB)
 ![Autolife USD](https://img.shields.io/badge/Autolife%20USD-included-555555)
 
+<p align="center">
+  <img src="docs/assets/autolife-sim-hero.png" alt="Autolife Sim ROS 2 Control in Isaac Sim" width="100%">
+</p>
+
 Autolife Sim 是一个面向 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工作空间。
 当前主要验证场景是 `Wainscott_0_int`。
 

@@ -8,6 +8,10 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB)
 ![Autolife USD](https://img.shields.io/badge/Autolife%20USD-included-555555)
 
+<p align="center">
+  <img src="docs/assets/autolife-sim-hero.png" alt="Autolife Sim ROS 2 Control in Isaac Sim" width="100%">
+</p>
+
 Autolife Sim is a ROS 2 and Isaac Sim workspace for running the Autolife robot
 in BEHAVIOR-1K / OmniGibson household scenes. The current validated scene is
 `Wainscott_0_int`.
