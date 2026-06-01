@@ -17,10 +17,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='sutai',
-    maintainer_email='jiaxuan0Lin0@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='JiaxuanLin',
+    maintainer_email='jiaxuan0lin0@gmail.com',
+    description='Sensor naming, runtime validation, and RViz configuration for the Autolife simulation stack.',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',

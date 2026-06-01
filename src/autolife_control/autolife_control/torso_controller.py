@@ -141,47 +141,51 @@ class TorsoController(Node):
         if not self.state_initialized:
             return
 
-        if self.trajectory is not None:
-            elapsed = (self.get_clock().now() - self.traj_start_time).nanoseconds / 1e9
-            times = self.traj_times
+        if self.trajectory is None:
+            return
 
-            if elapsed >= times[-1]:
-                # trajectory finished: hold last position, velocity = 0
-                for jn in self.traj_positions:
-                    self.target_positions[jn] = self.traj_positions[jn][-1]
-                    self.target_velocities[jn] = 0.0
-                self.get_logger().info('Trajectory completed')
-                self.trajectory = None
-            else:
-                # find which segment the robot is in
-                seg = 0
-                for i in range(1, len(times)):
-                    if elapsed < times[i]:
-                        seg = i
-                        break
+        elapsed = (self.get_clock().now() - self.traj_start_time).nanoseconds / 1e9
+        times = self.traj_times
 
-                for jn in self.traj_positions:
-                    positions = self.traj_positions[jn]
-                    velocities = self.traj_velocities[jn]
+        if elapsed >= times[-1]:
+            # Publish the final point once. The mux holds the last target after
+            # this source goes stale, so idle torso commands do not override
+            # whole-body commands.
+            for jn in self.traj_positions:
+                self.target_positions[jn] = self.traj_positions[jn][-1]
+                self.target_velocities[jn] = 0.0
+            self.get_logger().info('Trajectory completed')
+            self.trajectory = None
+        else:
+            # find which segment the robot is in
+            seg = 0
+            for i in range(1, len(times)):
+                if elapsed < times[i]:
+                    seg = i
+                    break
 
-                    if seg == 0:
-                        # before first waypoint: interpolate from current to first
-                        p0 = self.current_positions[jn]
-                        p1 = positions[0]
-                        v0 = 0.0
-                        v1 = velocities[0]
-                        pos, vel = cubic_hermite(elapsed, 0.0, times[0], p0, p1, v0, v1)
-                    else:
-                        # between waypoints seg-1 and seg
-                        p0 = positions[seg - 1]
-                        p1 = positions[seg]
-                        v0 = velocities[seg - 1]
-                        v1 = velocities[seg]
-                        pos, vel = cubic_hermite(elapsed, times[seg - 1], times[seg],
-                                                 p0, p1, v0, v1)
+            for jn in self.traj_positions:
+                positions = self.traj_positions[jn]
+                velocities = self.traj_velocities[jn]
 
-                    self.target_positions[jn] = pos
-                    self.target_velocities[jn] = vel
+                if seg == 0:
+                    # before first waypoint: interpolate from current to first
+                    p0 = self.current_positions[jn]
+                    p1 = positions[0]
+                    v0 = 0.0
+                    v1 = velocities[0]
+                    pos, vel = cubic_hermite(elapsed, 0.0, times[0], p0, p1, v0, v1)
+                else:
+                    # between waypoints seg-1 and seg
+                    p0 = positions[seg - 1]
+                    p1 = positions[seg]
+                    v0 = velocities[seg - 1]
+                    v1 = velocities[seg]
+                    pos, vel = cubic_hermite(elapsed, times[seg - 1], times[seg],
+                                             p0, p1, v0, v1)
+
+                self.target_positions[jn] = pos
+                self.target_velocities[jn] = vel
 
         # publish joint command
         cmd = JointState()

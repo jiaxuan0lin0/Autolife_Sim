@@ -1,0 +1,158 @@
+global:
+  joint_states_topic: /joint_states
+  reset_action: /whole_body_controller/follow_joint_trajectory
+  joint_control_action: /autolife_planning/joint_control
+  pose_control_action: /autolife_planning/pose_control
+  trajectory_execution_action: /autolife_planning/trajectory_execution
+  initial_state_timeout: 10.0
+  action_server_timeout: 10.0
+  action_result_timeout: 25.0
+  target_timeout: 8.0
+  target_tolerance: 0.05
+  reset_at_start: true
+  reset_at_end: true
+  reset_pose: planner_home
+  reset_duration: 4.0
+  reset_timeout: 8.0
+  reset_tolerance: 0.05
+  monitor_reset: false
+  reset_overshoot_report_threshold: 0.003
+  reset_overshoot_min_motion: 0.01
+  reset_overshoot_top_n: 5
+  pause_between_steps: 1.0
+
+mode:
+  base:
+    enabled: true
+    type: joint
+    group: auto
+    plan_only: false
+    planner_name: rrtc
+    time_limit: 4.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    min_trajectory_points: 2
+    deltas:
+      Joint_Ground_Vehicle_X: 0.35
+      Joint_Ground_Vehicle_Y: 0.10
+      Joint_Ground_Vehicle_Z: 0.25
+
+  head:
+    enabled: true
+    type: joint
+    group: auto
+    plan_only: false
+    planner_name: rrtc
+    time_limit: 4.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    min_trajectory_points: 2
+    deltas:
+      Joint_Neck_Yaw: 0.35
+      Joint_Neck_Pitch: 0.16
+
+  torso:
+    enabled: true
+    type: joint
+    group: auto
+    plan_only: false
+    planner_name: rrtc
+    time_limit: 4.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    min_trajectory_points: 2
+    deltas:
+      Joint_Ankle: -0.07
+      Joint_Knee: 0.12
+      Joint_Waist_Pitch: 0.10
+      Joint_Waist_Yaw: 0.18
+
+  left_arm:
+    enabled: true
+    type: joint
+    group: auto
+    plan_only: true
+    execute_trajectory: true
+    planner_name: rrtc
+    time_limit: 4.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    min_trajectory_points: 2
+    deltas:
+      Joint_Left_Shoulder_Outer: 0.26
+      Joint_Left_Elbow: -0.24
+      Joint_Left_Wrist_Upper: -0.12
+
+  right_arm:
+    enabled: true
+    type: joint
+    group: auto
+    plan_only: false
+    planner_name: rrtc
+    time_limit: 4.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    min_trajectory_points: 2
+    deltas:
+      Joint_Right_Shoulder_Outer: -0.14
+      Joint_Right_Elbow: 0.24
+      Joint_Right_Wrist_Upper: 0.12
+
+  left_arm_pose:
+    enabled: false
+    type: pose
+    chain: left_arm
+    side: ""
+    ik_backend: trac_ik
+    group: autolife_left_arm
+    plan_only: true
+    planner_name: rrtc
+    time_limit: 4.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    fk_joint_deltas:
+      Joint_Left_Shoulder_Outer: -0.10
+      Joint_Left_Elbow: 0.16
+      Joint_Left_Wrist_Upper: 0.08
+    min_trajectory_points: 2
+
+  whole_body:
+    enabled: true
+    type: joint
+    group: auto
+    reference_pose: planner_home
+    plan_only: false
+    planner_name: rrtc
+    time_limit: 6.0
+    velocity_scaling: 0.35
+    acceleration_scaling: 0.25
+    sample_dt: 0.01
+    min_trajectory_points: 2
+    parts: [base, torso, head, left_arm, right_arm]
+    deltas_by_part:
+      base:
+        Joint_Ground_Vehicle_X: 0.126
+        Joint_Ground_Vehicle_Y: 0.056
+        Joint_Ground_Vehicle_Z: 0.112
+      torso:
+        Joint_Ankle: -0.056
+        Joint_Knee: 0.098
+        Joint_Waist_Pitch: 0.056
+        Joint_Waist_Yaw: 0.084
+      head:
+        Joint_Neck_Yaw: 0.140
+        Joint_Neck_Pitch: 0.070
+      left_arm:
+        Joint_Left_Shoulder_Outer: 0.140
+        Joint_Left_Elbow: -0.180
+        Joint_Left_Wrist_Upper: -0.120
+      right_arm:
+        Joint_Right_Shoulder_Outer: -0.140
+        Joint_Right_Elbow: 0.180
+        Joint_Right_Wrist_Upper: 0.120

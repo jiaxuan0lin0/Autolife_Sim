@@ -1,0 +1,24 @@
+# High-level joint-space control through Autolife-Planning.
+# Empty group or "auto" lets the bridge choose the smallest compatible planner group.
+string group
+string[] joint_names
+float64[] positions
+
+# If true, only return the planned timed trajectory without sending it to the controller.
+bool plan_only
+
+# Optional per-request overrides. Empty planner_name or non-positive numeric
+# values use bridge defaults.
+string planner_name
+float64 time_limit
+float64 velocity_scaling
+float64 acceleration_scaling
+float64 sample_dt
+---
+bool success
+string message
+trajectory_msgs/JointTrajectory trajectory
+---
+string stage
+float32 progress
+string message

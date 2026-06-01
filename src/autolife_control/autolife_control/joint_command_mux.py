@@ -89,7 +89,7 @@ class JointCommandMux(Node):
             return
 
         self.target_positions = {joint: self.current_positions[joint] for joint in CONTROLLABLE_JOINTS}
-        self.target_velocities = {joint: 0.0 for joint in CONTROLLABLE_JOINTS}
+        self.target_velocities = {joint: math.nan for joint in CONTROLLABLE_JOINTS}
         self.initialized = True
         self.get_logger().info("Initialized mux targets from /joint_states")
 
@@ -121,11 +121,11 @@ class JointCommandMux(Node):
                 continue
 
             position = msg.position[index] if has_positions else None
-            velocity = msg.velocity[index] if has_velocities else 0.0
+            velocity = msg.velocity[index] if has_velocities else None
 
-            if position is not None and not math.isfinite(position):
-                continue
-            if velocity is not None and not math.isfinite(velocity):
+            position = self._finite_or_none(position)
+            velocity = self._finite_or_none(velocity)
+            if position is None and velocity is None:
                 continue
 
             command[joint_name] = {
@@ -165,7 +165,7 @@ class JointCommandMux(Node):
                 velocity = command["velocity"]
                 if position is not None:
                     self.target_positions[joint_name] = position
-                self.target_velocities[joint_name] = 0.0 if velocity is None else velocity
+                self.target_velocities[joint_name] = math.nan if velocity is None else velocity
                 self.last_owner[joint_name] = source
                 claimed_joints[joint_name] = source
 
@@ -205,13 +205,20 @@ class JointCommandMux(Node):
         stale_key = (source, joint_name)
         if stale_key not in self.reported_stale_joints:
             self.get_logger().warn(
-                f"{source} command for '{joint_name}' timed out; holding last target with zero velocity"
+                f"{source} command for '{joint_name}' timed out; holding last target"
             )
             self.reported_stale_joints.add(stale_key)
 
         if self.last_owner.get(joint_name) == source:
-            self.target_velocities[joint_name] = 0.0
+            self.target_velocities[joint_name] = math.nan
         return True
+
+    def _finite_or_none(self, value):
+        if value is None or math.isnan(value):
+            return None
+        if not math.isfinite(value):
+            return None
+        return value
 
     def _warn_once(self, warned_set, key, message):
         if key in warned_set:

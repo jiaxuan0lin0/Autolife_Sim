@@ -3,7 +3,7 @@ global:
   mux_output_topic: /autolife/joint_command
   initial_state_timeout: 10.0
   action_server_timeout: 5.0
-  action_result_timeout: 8.0
+  action_result_timeout: 10.0
   topic_subscriber_timeout: 5.0
   motion_timeout: 5.0
   min_motion_delta: 0.003
@@ -12,12 +12,12 @@ global:
   reset_before_each: false
   reset_at_end: true
   reset_action: /whole_body_controller/follow_joint_trajectory
-  reset_duration: 2.5
-  reset_timeout: 4.0
+  reset_duration: 4.0
+  reset_timeout: 6.0
   reset_tolerance: 0.03
   restore_after_each: false
   restore_on_failure: false
-  restore_duration: 1.5
+  restore_duration: 3.0
   publish_repeats: 1
   publish_repeat_period: 0.1
 
@@ -25,10 +25,10 @@ controllers:
   base:
     enabled: true
     cmd_vel_topic: /cmd_vel
-    duration: 1.5
+    duration: 2.0
     restore_after_each: false
     command:
-      linear_x: 0.05
+      linear_x: 0.08
       linear_y: 0.0
       angular_z: 0.0
 
@@ -36,39 +36,39 @@ controllers:
     enabled: true
     topic: /head/joint_trajectory
     mode: delta
-    duration: 2.0
+    duration: 2.5
     deltas:
-      Joint_Neck_Yaw: 0.2
-      Joint_Neck_Pitch: 0.08
+      Joint_Neck_Yaw: 0.35
+      Joint_Neck_Pitch: 0.15
 
   torso:
     enabled: true
     topic: /torso/joint_trajectory
     mode: delta
-    duration: 2.0
+    duration: 2.5
     deltas:
-      Joint_Waist_Yaw: 0.08
-      Joint_Waist_Pitch: 0.05
+      Joint_Waist_Yaw: 0.15
+      Joint_Waist_Pitch: 0.10
 
   left_arm:
     enabled: true
     action: /left_arm_controller/follow_joint_trajectory
     mode: delta
-    duration: 2.5
+    duration: 3.0
     deltas:
-      Joint_Left_Shoulder_Outer: -0.08
-      Joint_Left_Elbow: 0.12
-      Joint_Left_Wrist_Upper: 0.08
+      Joint_Left_Shoulder_Outer: -0.16
+      Joint_Left_Elbow: 0.25
+      Joint_Left_Wrist_Upper: 0.15
 
   right_arm:
     enabled: true
     action: /right_arm_controller/follow_joint_trajectory
     mode: delta
-    duration: 2.5
+    duration: 3.0
     deltas:
-      Joint_Right_Shoulder_Outer: 0.08
-      Joint_Right_Elbow: -0.12
-      Joint_Right_Wrist_Upper: -0.08
+      Joint_Right_Shoulder_Outer: 0.16
+      Joint_Right_Elbow: -0.25
+      Joint_Right_Wrist_Upper: -0.15
 
   gripper:
     enabled: true
@@ -95,18 +95,18 @@ controllers:
     topic: /autolife/command/whole_body
     action: /whole_body_controller/follow_joint_trajectory
     mode: absolute
-    duration: 3.5
+    duration: 4.5
     publish_rate_hz: 50.0
     target_tolerance: 0.05
     target_timeout: 4.0
     positions:
-      Joint_Neck_Yaw: -0.35
-      Joint_Neck_Pitch: 0.15
-      Joint_Waist_Yaw: -0.18
-      Joint_Waist_Pitch: 0.10
-      Joint_Left_Shoulder_Outer: -0.18
-      Joint_Right_Shoulder_Outer: 0.18
-      Joint_Left_Elbow: 0.30
-      Joint_Right_Elbow: -0.30
-      Joint_Left_Wrist_Upper: 0.18
-      Joint_Right_Wrist_Upper: -0.18
+      Joint_Neck_Yaw: -0.50
+      Joint_Neck_Pitch: 0.22
+      Joint_Waist_Yaw: -0.30
+      Joint_Waist_Pitch: 0.16
+      Joint_Left_Shoulder_Outer: -0.32
+      Joint_Right_Shoulder_Outer: 0.32
+      Joint_Left_Elbow: 0.55
+      Joint_Right_Elbow: -0.55
+      Joint_Left_Wrist_Upper: 0.32
+      Joint_Right_Wrist_Upper: -0.32

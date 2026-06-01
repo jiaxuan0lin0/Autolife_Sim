@@ -198,7 +198,7 @@ Supported execution modes:
 Default:
 
 ```text
-execution_mode: position_goal
+execution_mode: trajectory
 ```
 
 ## Runtime Test

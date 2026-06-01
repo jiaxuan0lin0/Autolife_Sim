@@ -24,7 +24,13 @@ DEFAULT_AUTOLIFE_USD = Path("/data/jiaxuanLin/autolife_ws/src/asset/usd/autolife
 DEFAULT_AUTOLIFE_CONFIG = Path("/data/jiaxuanLin/autolife_ws/src/autolife_simulation/config/autolife.json")
 DEFAULT_SENSOR_OVERLAY_USD = Path("/data/jiaxuanLin/autolife_ws/src/asset/usd/world.usd")
 DEFAULT_REALSENSE_USD = Path("/data/jiaxuanLin/autolife_ws/src/asset/usd/realsense/d435i/realsense_d435i.usd")
+DEFAULT_LIGHTWHEEL_MICROWAVE_USD = Path(
+    "/data/jiaxuanLin/Lightwheel_OpenSource/Manipulation/Microwave035/Microwave035.usd"
+)
 DEFAULT_ROBOT_PRIM_PATH = "/World/autolife"
+DEFAULT_LIGHTWHEEL_MICROWAVE_PRIM_PATH = "/World/lightwheel_microwave_035"
+DEFAULT_LIGHTWHEEL_MICROWAVE_POSITION = (0, 0.0, 0.18)
+DEFAULT_LIGHTWHEEL_MICROWAVE_ORIENTATION_WXYZ = (1.0, 0.0, 0.0, 0.0)
 DEFAULT_GRAPH_PATH = "/ActionGraph"
 DEFAULT_SENSOR_GRAPH_PATH = "/AutolifeSensorGraph"
 DEFAULT_SENSOR_MANIFEST_PATH = Path("/tmp/autolife_sensor_manifest.json")
@@ -248,6 +254,11 @@ def _parse_args() -> argparse.Namespace:
         "--no-sensor-overlay",
         action="store_true",
         help="Do not copy the sensor prims authored in the original Autolife world.usd.",
+    )
+    parser.add_argument(
+        "--no-lightwheel-microwave",
+        action="store_true",
+        help="Do not add the fixed Lightwheel Microwave035 asset to the BEHAVIOR scene.",
     )
     parser.add_argument(
         "--no-eye-camera-roll-correction",
@@ -583,6 +594,34 @@ def _add_autolife_usd(og, robot_usd: Path, robot_prim_path: str, position, orien
     return root_joint_path
 
 
+def _add_lightwheel_microwave_usd(og) -> str:
+    from omnigibson.utils.usd_utils import add_asset_to_stage
+
+    microwave_usd = DEFAULT_LIGHTWHEEL_MICROWAVE_USD.expanduser().resolve()
+    if not microwave_usd.exists():
+        raise FileNotFoundError(microwave_usd)
+
+    stage = og.sim.stage
+    prim_path = DEFAULT_LIGHTWHEEL_MICROWAVE_PRIM_PATH
+    if stage.GetPrimAtPath(prim_path).IsValid():
+        with og.sim.editing_usd():
+            stage.RemovePrim(prim_path)
+
+    add_asset_to_stage(asset_path=str(microwave_usd), prim_path=prim_path)
+    with og.sim.editing_usd():
+        _set_root_pose(
+            stage=stage,
+            prim_path=prim_path,
+            position=DEFAULT_LIGHTWHEEL_MICROWAVE_POSITION,
+            orientation_wxyz=DEFAULT_LIGHTWHEEL_MICROWAVE_ORIENTATION_WXYZ,
+        )
+
+    door_joint_path = f"{prim_path}/Microwave035_door/microjoint"
+    if not stage.GetPrimAtPath(door_joint_path).IsValid():
+        raise RuntimeError(f"Lightwheel microwave door joint was not found at {door_joint_path}")
+    return door_joint_path
+
+
 def _setup_ros2_joint_bridge(og, graph_path: str, robot_path: str, command_topic: str) -> None:
     script_dir = Path(__file__).resolve().parent
     sys.path.insert(0, str(script_dir))
@@ -669,6 +708,11 @@ def main() -> int:
     )
     _emit(f"Added Autolife USD at {args.robot_prim_path}")
     _emit(f"Autolife articulation root: {root_joint_path}")
+
+    if not args.no_lightwheel_microwave:
+        microwave_door_joint_path = _add_lightwheel_microwave_usd(og=og)
+        _emit(f"Added Lightwheel microwave at {DEFAULT_LIGHTWHEEL_MICROWAVE_PRIM_PATH}")
+        _emit(f"Lightwheel microwave door joint: {microwave_door_joint_path}")
 
     if not args.no_sensor_overlay:
         with og.sim.editing_usd():

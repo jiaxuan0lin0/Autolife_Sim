@@ -27,19 +27,39 @@ class WholeBodyController(Node):
         self.action_name = self.declare_parameter(
             "action_name", "/whole_body_controller/follow_joint_trajectory"
         ).value
-        self.execution_mode = self.declare_parameter("execution_mode", "position_goal").value
+        self.execution_mode = self.declare_parameter("execution_mode", "trajectory").value
         self.publish_rate_hz = float(self.declare_parameter("publish_rate_hz", 100.0).value)
         self.publish_velocity_commands = bool(
             self.declare_parameter("publish_velocity_commands", False).value
         )
+        self.feedback_rate_hz = float(
+            self.declare_parameter("feedback_rate_hz", 10.0).value
+        )
+        self.timing_slip_warn_threshold = float(
+            self.declare_parameter("timing_slip_warn_threshold", 0.05).value
+        )
         self.goal_tolerance = float(self.declare_parameter("goal_tolerance", 0.03).value)
+        self.goal_velocity_tolerance = float(
+            self.declare_parameter("goal_velocity_tolerance", 0.0).value
+        )
+        self.goal_settle_time = float(self.declare_parameter("goal_settle_time", 0.25).value)
         self.goal_timeout = float(self.declare_parameter("goal_timeout", 5.0).value)
         self.initial_state_timeout = float(self.declare_parameter("initial_state_timeout", 3.0).value)
 
         if self.publish_rate_hz <= 0.0:
             raise ValueError("publish_rate_hz must be positive")
+        if self.feedback_rate_hz < 0.0:
+            raise ValueError("feedback_rate_hz must be non-negative")
+        if self.timing_slip_warn_threshold < 0.0:
+            raise ValueError("timing_slip_warn_threshold must be non-negative")
         if self.execution_mode not in ("position_goal", "trajectory"):
             raise ValueError("execution_mode must be 'position_goal' or 'trajectory'")
+        if self.goal_tolerance < 0.0:
+            raise ValueError("goal_tolerance must be non-negative")
+        if self.goal_velocity_tolerance < 0.0:
+            raise ValueError("goal_velocity_tolerance must be non-negative")
+        if self.goal_settle_time < 0.0:
+            raise ValueError("goal_settle_time must be non-negative")
 
         self.current_positions = {joint: 0.0 for joint in CONTROLLABLE_JOINTS}
         self.current_velocities = {joint: 0.0 for joint in CONTROLLABLE_JOINTS}
@@ -112,7 +132,11 @@ class WholeBodyController(Node):
             return self.execute_position_goal(goal_handle, joint_names, traj_data)
 
         period = 1.0 / self.publish_rate_hz
+        feedback_period = self.get_feedback_period()
         start_time = time.monotonic()
+        next_publish_time = start_time
+        next_feedback_time = start_time
+        last_slip_warn_time = 0.0
         final_command = None
 
         while True:
@@ -123,15 +147,38 @@ class WholeBodyController(Node):
                 goal_handle.canceled()
                 return result
 
-            elapsed = time.monotonic() - start_time
+            now = time.monotonic()
+            elapsed = now - start_time
             positions, velocities = self.sample_trajectory(traj_data, elapsed)
             final_command = self.publish_command(joint_names, positions, velocities)
-            self.publish_feedback(goal_handle, joint_names, positions, velocities)
+
+            if feedback_period is not None and (
+                now >= next_feedback_time or elapsed >= traj_data["times"][-1]
+            ):
+                self.publish_feedback(goal_handle, joint_names, positions, velocities)
+                while next_feedback_time <= now:
+                    next_feedback_time += feedback_period
 
             if elapsed >= traj_data["times"][-1]:
                 break
 
-            time.sleep(period)
+            next_publish_time += period
+            sleep_time = next_publish_time - time.monotonic()
+            if sleep_time > 0.0:
+                time.sleep(sleep_time)
+                continue
+
+            slip = -sleep_time
+            if (
+                self.timing_slip_warn_threshold > 0.0
+                and slip >= self.timing_slip_warn_threshold
+                and now - last_slip_warn_time >= 1.0
+            ):
+                self.get_logger().warn(
+                    f"Whole-body trajectory loop slipped by {slip * 1000.0:.1f} ms"
+                )
+                last_slip_warn_time = now
+            next_publish_time += (int(slip / period) + 1) * period
 
         return self.wait_for_goal(goal_handle, joint_names, final_command, period)
 
@@ -270,6 +317,11 @@ class WholeBodyController(Node):
 
         return sampled_positions, sampled_velocities
 
+    def get_feedback_period(self):
+        if self.feedback_rate_hz == 0.0:
+            return None
+        return 1.0 / self.feedback_rate_hz
+
     def wait_for_joint_states(self, joint_names):
         deadline = time.monotonic() + self.initial_state_timeout
         while time.monotonic() < deadline:
@@ -287,8 +339,10 @@ class WholeBodyController(Node):
         desired = list(final_command.position)
         feedback = FollowJointTrajectory.Feedback()
         deadline = time.monotonic() + self.goal_timeout
+        stable_since = None
 
         while time.monotonic() < deadline:
+            now = time.monotonic()
             if goal_handle.is_cancel_requested:
                 result = FollowJointTrajectory.Result()
                 result.error_code = FollowJointTrajectory.Result.SUCCESSFUL
@@ -297,32 +351,50 @@ class WholeBodyController(Node):
                 return result
 
             actual = self.get_actual_positions(joint_names)
+            velocities = self.get_actual_velocities(joint_names)
             errors = [desired_value - actual_value for desired_value, actual_value in zip(desired, actual)]
+            velocity_errors = [-velocity for velocity in velocities]
 
             feedback.joint_names = joint_names
             feedback.desired.positions = desired
             feedback.desired.velocities = [0.0 for _ in joint_names]
             feedback.actual.positions = actual
+            feedback.actual.velocities = velocities
             feedback.error.positions = errors
+            feedback.error.velocities = velocity_errors
             goal_handle.publish_feedback(feedback)
 
-            if errors and max(abs(error) for error in errors) <= self.goal_tolerance:
-                result = FollowJointTrajectory.Result()
-                result.error_code = FollowJointTrajectory.Result.SUCCESSFUL
-                result.error_string = ""
-                goal_handle.succeed()
-                return result
+            position_ok = errors and max(abs(error) for error in errors) <= self.goal_tolerance
+            velocity_ok = (
+                self.goal_velocity_tolerance <= 0.0
+                or not velocities
+                or max(abs(velocity) for velocity in velocities) <= self.goal_velocity_tolerance
+            )
+            if position_ok and velocity_ok:
+                if stable_since is None:
+                    stable_since = now
+                if now - stable_since >= self.goal_settle_time:
+                    result = FollowJointTrajectory.Result()
+                    result.error_code = FollowJointTrajectory.Result.SUCCESSFUL
+                    result.error_string = ""
+                    goal_handle.succeed()
+                    return result
+            else:
+                stable_since = None
 
             final_command.header.stamp = self.get_clock().now().to_msg()
             self.joint_cmd_pub.publish(final_command)
             time.sleep(min(period, 0.05))
 
         actual = self.get_actual_positions(joint_names)
+        velocities = self.get_actual_velocities(joint_names)
         errors = [desired_value - actual_value for desired_value, actual_value in zip(desired, actual)]
         return self.reject_goal(
             goal_handle,
             FollowJointTrajectory.Result.GOAL_TOLERANCE_VIOLATED,
-            f"Whole-body goal tolerance violated; final errors: {dict(zip(joint_names, errors))}",
+            "Whole-body goal tolerance violated; "
+            f"final errors: {dict(zip(joint_names, errors))}; "
+            f"final velocities: {dict(zip(joint_names, velocities))}",
         )
 
     def publish_command(self, joint_names, positions, velocities):
@@ -350,6 +422,10 @@ class WholeBodyController(Node):
     def get_actual_positions(self, joint_names):
         with self.state_lock:
             return [self.current_positions.get(joint, 0.0) for joint in joint_names]
+
+    def get_actual_velocities(self, joint_names):
+        with self.state_lock:
+            return [self.current_velocities.get(joint, 0.0) for joint in joint_names]
 
     def get_actual_position_map(self, joint_names):
         with self.state_lock:

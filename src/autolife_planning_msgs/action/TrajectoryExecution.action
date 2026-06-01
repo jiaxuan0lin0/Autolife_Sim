@@ -1,0 +1,9 @@
+# Execute a precomputed joint trajectory through the configured controller.
+trajectory_msgs/JointTrajectory trajectory
+---
+bool success
+string message
+---
+string stage
+float32 progress
+string message

@@ -1,0 +1,37 @@
+autolife_planning_server:
+  ros__parameters:
+    planning_frame: World
+    joint_states_topic: /joint_states
+    controller_action: /whole_body_controller/follow_joint_trajectory
+
+    joint_control_action: /autolife_planning/joint_control
+    pose_control_action: /autolife_planning/pose_control
+    trajectory_execution_action: /autolife_planning/trajectory_execution
+
+    planner_name: bitstar
+    time_limit: 2.0
+    point_radius: 0.01
+    simplify: true
+    interpolate: true
+    interpolate_count: 0
+    resolution: 64.0
+
+    sample_dt: 0.02
+    max_deviation: 0.1
+    velocity_scaling: 1.0
+    acceleration_scaling: 1.0
+
+    ik_backend: trac_ik
+    ik_self_collision: false
+    ik_timeout: 0.2
+    ik_max_attempts: 10
+    ik_position_tolerance: 0.0001
+    ik_orientation_tolerance: 0.0001
+
+    initial_state_timeout: 3.0
+    controller_server_timeout: 5.0
+
+    # Leave empty to disable environment obstacle point clouds.
+    pointcloud_topic: ""
+    pointcloud_max_points: 20000
+    filter_self_from_pointcloud: true

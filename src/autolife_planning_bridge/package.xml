@@ -1,16 +1,22 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>autolife_simulation</name>
+  <name>autolife_planning_bridge</name>
   <version>0.0.0</version>
-  <description>Isaac Sim and OmniGibson integration for loading BEHAVIOR-1K scenes with the Autolife robot.</description>
+  <description>ROS 2 bridge from Autolife planning actions to the existing controller stack.</description>
   <maintainer email="jiaxuan0lin0@gmail.com">JiaxuanLin</maintainer>
   <license>Apache-2.0</license>
 
-  <depend>rclpy</depend>
-  <depend>std_msgs</depend>
+  <depend>autolife_planning_msgs</depend>
+  <depend>control_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>trajectory_msgs</depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>sensor_msgs_py</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

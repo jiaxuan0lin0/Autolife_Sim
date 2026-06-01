@@ -1,0 +1,33 @@
+# High-level end-effector pose control through IK + Autolife-Planning.
+# Target pose is transformed to the bridge planning_frame when TF is available.
+geometry_msgs/PoseStamped target_pose
+
+# IK chain selection. Examples:
+#   chain: "left_arm" / "right_arm"
+#   chain: "whole_body", side: "left" / "right"
+string chain
+string side
+string ik_backend
+
+# Motion planner group. Empty or "auto" derives the group from the IK chain.
+string group
+
+# If true, only return the planned timed trajectory without sending it to the controller.
+bool plan_only
+
+# Optional per-request overrides. Empty planner_name or non-positive numeric
+# values use bridge defaults.
+string planner_name
+float64 time_limit
+float64 velocity_scaling
+float64 acceleration_scaling
+float64 sample_dt
+---
+bool success
+string message
+sensor_msgs/JointState joint_goal
+trajectory_msgs/JointTrajectory trajectory
+---
+string stage
+float32 progress
+string message

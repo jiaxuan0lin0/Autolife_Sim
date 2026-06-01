@@ -94,7 +94,8 @@ class ControllerRuntimeTest(Node):
                 return 1
 
         results = []
-        for name in selected_controllers:
+        reset_at_end = bool(self.global_config.get("reset_at_end", True))
+        for index, name in enumerate(selected_controllers):
             controller_config = self.config["controllers"][name]
             if not controller_config.get("enabled", True):
                 self._print_skip(name, "disabled in config")
@@ -117,11 +118,12 @@ class ControllerRuntimeTest(Node):
 
             results.append((name, ok))
             pause = float(self.global_config.get("pause_between_steps", 0.0))
-            if pause > 0.0:
+            is_last_controller = index == len(selected_controllers) - 1
+            if pause > 0.0 and not (is_last_controller and reset_at_end):
                 time.sleep(pause)
 
         end_reset_ok = True
-        if bool(self.global_config.get("reset_at_end", True)):
+        if reset_at_end:
             end_reset_ok = self._reset_all_to_zero("script end")
 
         failed = [name for name, ok in results if not ok]
@@ -185,13 +187,9 @@ class ControllerRuntimeTest(Node):
             f"{len(targets)} joints -> 0.0 via {reset_action}"
         )
 
-        # These controllers publish hold targets continuously. Reset their internal
-        # targets first so they do not pull the robot away from whole-body zero.
-        self._publish_zero_controller_targets(duration)
-
         action_ok = self._send_follow_trajectory(reset_action, targets, duration)
         state_ok = self._wait_for_targets("reset", targets, tolerance, timeout)
-        self._publish_zero_controller_targets(0.1)
+        self._publish_zero_controller_targets(1.0)
         if action_ok and state_ok:
             print(f"  [RESET] reached zero tolerance={tolerance:.4f}")
             return True

@@ -3,9 +3,9 @@
 <package format="3">
   <name>autolife_sensors</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="jiaxuan0Lin0@gmail.com">sutai</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Sensor naming, runtime validation, and RViz configuration for the Autolife simulation stack.</description>
+  <maintainer email="jiaxuan0lin0@gmail.com">JiaxuanLin</maintainer>
+  <license>Apache-2.0</license>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>

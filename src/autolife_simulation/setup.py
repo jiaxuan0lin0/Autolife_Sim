@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     maintainer='JiaxuanLin',
     maintainer_email='jiaxuan0lin0@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='Isaac Sim and OmniGibson integration for loading BEHAVIOR-1K scenes with the Autolife robot.',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
