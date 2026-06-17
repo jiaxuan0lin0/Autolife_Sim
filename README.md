@@ -99,6 +99,46 @@ through the official workflow:
 - BEHAVIOR installation: https://behavior.stanford.edu/getting_started/installation.html
 - BEHAVIOR GitHub: https://github.com/StanfordVL/BEHAVIOR-1K
 
+### Validated BEHAVIOR / OmniGibson Version
+
+OmniGibson is tightly coupled to the Isaac Sim version it was installed with.
+For reproducible setup, use the BEHAVIOR-1K commit validated with this
+workspace instead of relying on a moving `main` branch or a different stable
+release:
+
+```bash
+cd /path/to/work
+git clone https://github.com/StanfordVL/BEHAVIOR-1K.git
+cd BEHAVIOR-1K
+git checkout 8579326f8a9719fe7a261f69ab0f27d545ac38a9
+
+./setup.sh --new-env --omnigibson --bddl --dataset \
+  --accept-conda-tos --accept-nvidia-eula --accept-dataset-tos
+```
+
+The validated stack is:
+
+```text
+BEHAVIOR-1K commit: 8579326f8a9719fe7a261f69ab0f27d545ac38a9
+Isaac Sim: 5.1.0
+OmniGibson KIT_FILES: (5, 1, 0)
+```
+
+After installation, verify that the BEHAVIOR checkout, Isaac Sim version, and
+OmniGibson kit mapping are aligned:
+
+```bash
+conda activate behavior
+
+git -C /path/to/work/BEHAVIOR-1K rev-parse HEAD
+cat "$ISAAC_PATH/VERSION"
+grep -n "KIT_FILES" -A5 /path/to/work/BEHAVIOR-1K/OmniGibson/omnigibson/simulator.py
+```
+
+If OmniGibson reports an error like `Isaac Sim version must be one of
+[(4, 5, 0)]`, the BEHAVIOR / OmniGibson checkout is from a different version
+than the one used for this workspace.
+
 ## Build
 
 ```bash

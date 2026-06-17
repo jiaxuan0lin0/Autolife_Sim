@@ -97,6 +97,44 @@ autolife_ws/
 - BEHAVIOR installation: https://behavior.stanford.edu/getting_started/installation.html
 - BEHAVIOR GitHub: https://github.com/StanfordVL/BEHAVIOR-1K
 
+### 已验证的 BEHAVIOR / OmniGibson 版本
+
+OmniGibson 和 Isaac Sim 版本是强绑定的。为了保证别人复现时拿到同一套仿真
+栈，不要直接依赖会变化的 `main` 分支，也不要随意换成其他 stable release。
+请固定到本 workspace 验证过的 BEHAVIOR-1K commit：
+
+```bash
+cd /path/to/work
+git clone https://github.com/StanfordVL/BEHAVIOR-1K.git
+cd BEHAVIOR-1K
+git checkout 8579326f8a9719fe7a261f69ab0f27d545ac38a9
+
+./setup.sh --new-env --omnigibson --bddl --dataset \
+  --accept-conda-tos --accept-nvidia-eula --accept-dataset-tos
+```
+
+当前验证过的组合是：
+
+```text
+BEHAVIOR-1K commit: 8579326f8a9719fe7a261f69ab0f27d545ac38a9
+Isaac Sim: 5.1.0
+OmniGibson KIT_FILES: (5, 1, 0)
+```
+
+安装完成后，用下面几条命令检查 BEHAVIOR checkout、Isaac Sim 版本和
+OmniGibson kit 映射是否对齐：
+
+```bash
+conda activate behavior
+
+git -C /path/to/work/BEHAVIOR-1K rev-parse HEAD
+cat "$ISAAC_PATH/VERSION"
+grep -n "KIT_FILES" -A5 /path/to/work/BEHAVIOR-1K/OmniGibson/omnigibson/simulator.py
+```
+
+如果报错类似 `Isaac Sim version must be one of [(4, 5, 0)]`，说明当前安装的
+BEHAVIOR / OmniGibson 不是本 workspace 验证过的版本。
+
 ## 编译
 
 ```bash
