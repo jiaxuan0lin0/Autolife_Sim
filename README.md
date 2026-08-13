@@ -18,14 +18,11 @@ optional Autolife-Planning stack.
 
 ## Features
 
-- One `autolife_sim` Conda environment for Isaac Sim 5.1, OmniGibson,
-  BEHAVIOR-1K, and MolmoSpaces.
 - A single simulator entry point for BEHAVIOR, MolmoSpaces, and local USD
   scenes.
 - ROS 2 joint-state, joint-command, camera, LiDAR, IMU, and TF bridges.
 - ROS-native controllers with command arbitration and runtime checks.
 - Optional ROS 2 actions backed by Autolife-Planning.
-- Repository-relative dependency, cache, asset, and configuration paths.
 
 ## Architecture
 

@@ -17,13 +17,10 @@ Autolife_Sim 是 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工作空间。�
 
 ## 主要功能
 
-- 使用一个 `autolife_sim` Conda 环境运行 Isaac Sim 5.1、OmniGibson、
-  BEHAVIOR-1K 和 MolmoSpaces。
 - BEHAVIOR、MolmoSpaces 和本地 USD 共用同一个仿真启动入口。
 - 提供关节状态、关节命令、相机、LiDAR、IMU 和 TF 的 ROS 2 bridge。
 - 提供带命令仲裁和运行时检查的 ROS-native controllers。
 - 可选接入基于 ROS 2 actions 的 Autolife-Planning。
-- 依赖、缓存、资产和配置默认使用仓库相对路径。
 
 ## 系统架构
 
