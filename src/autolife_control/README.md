@@ -35,7 +35,7 @@ joints have been seen before publishing `/autolife/joint_command`.
 Build and source the workspace first:
 
 ```bash
-cd /data/jiaxuanLin/autolife_ws
+cd "$(git rev-parse --show-toplevel)"
 colcon build --packages-select autolife_control --symlink-install
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
@@ -209,7 +209,7 @@ the corresponding `/joint_states` values change.
 Start the simulator and controllers first, then run:
 
 ```bash
-cd /data/jiaxuanLin/autolife_ws
+cd "$(git rev-parse --show-toplevel)"
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
@@ -273,41 +273,3 @@ List action servers:
 ```bash
 ros2 action list
 ```
-
-## Troubleshooting
-
-### No motion
-
-Check these in order:
-
-1. `/joint_states` exists and contains Autolife joint names.
-2. The relevant controller node is running.
-3. The controller publishes to `/autolife/command/*`.
-4. `joint_command_mux` publishes `/autolife/joint_command`.
-5. The Isaac Sim ActionGraph subscribes to `/autolife/joint_command`.
-
-### Action goal rejected
-
-Most rejections are caused by one of these:
-
-- joint name not in the controller whitelist
-- duplicate joint name
-- empty trajectory
-- non-increasing waypoint times
-- missing position values
-- non-finite position or velocity value
-
-### Action goal times out
-
-Check that the target joints are present in `/joint_states` and that Isaac Sim
-is applying `/autolife/joint_command`.
-
-### Mux conflict warning
-
-Two sources are commanding the same joint during overlapping timeout windows.
-The mux keeps the higher-priority source according to the priority order above.
-
-### Gripper does not reach goal
-
-Check the command-to-joint mapping parameters and confirm that
-`Joint_Left_Gripper` and `Joint_Right_Gripper` are present in `/joint_states`.

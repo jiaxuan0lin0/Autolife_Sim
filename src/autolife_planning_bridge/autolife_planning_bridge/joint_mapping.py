@@ -1,4 +1,4 @@
-"""Joint and group mapping between autolife_ws and Autolife-Planning."""
+"""Joint and group mapping between Autolife_Sim and Autolife-Planning."""
 
 from __future__ import annotations
 

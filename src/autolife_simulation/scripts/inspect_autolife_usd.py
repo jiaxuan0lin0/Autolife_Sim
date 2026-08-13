@@ -3,8 +3,8 @@
 
 Run this with Isaac Sim's Python, for example:
 
-    /data/jiaxuanLin/isaacsim/python.sh \
-        /data/jiaxuanLin/autolife_ws/src/autolife_simulation/scripts/inspect_autolife_usd.py
+    source scripts/activate_autolife_sim.sh
+    python src/autolife_simulation/scripts/inspect_autolife_usd.py
 """
 
 from __future__ import annotations
@@ -17,9 +17,8 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_USD = Path(
-    "/data/jiaxuanLin/autolife_ws/src/asset/usd/autolife/autolife.usd"
-)
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_USD = REPOSITORY_ROOT / "src/asset/usd/autolife/autolife.usd"
 
 CONTROLLABLE_JOINTS = [
     "Joint_Ground_Vehicle_X",

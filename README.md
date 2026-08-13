@@ -1,263 +1,219 @@
-# Autolife Sim
+# Autolife_Sim
 
-[中文说明](README.zh-CN.md)
+[简体中文](README.zh-CN.md)
 
 ![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E)
-![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-required-76B900)
-![OmniGibson](https://img.shields.io/badge/OmniGibson-BEHAVIOR--1K-5B6EE1)
-![Python](https://img.shields.io/badge/Python-3.12-3776AB)
-![Autolife USD](https://img.shields.io/badge/Autolife%20USD-included-555555)
+![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-5.1-76B900)
+![Python](https://img.shields.io/badge/Simulator%20Python-3.11-3776AB)
+![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
 <p align="center">
-  <img src="docs/assets/autolife-sim-hero.png" alt="Autolife Sim ROS 2 Control in Isaac Sim" width="100%">
+  <img src="docs/assets/autolife-sim-hero.png" alt="Autolife robot in Isaac Sim" width="100%">
 </p>
 
-Autolife Sim is a ROS 2 and Isaac Sim workspace for running the Autolife robot
-in BEHAVIOR-1K / OmniGibson household scenes. The current validated scene is
-`Wainscott_0_int`.
+Autolife_Sim is the ROS 2 and Isaac Sim workspace for the Autolife robot. It
+loads the robot into BEHAVIOR-1K, MolmoSpaces, or a minimal desk scene and
+connects simulation joints and sensors to ROS 2 controllers, RViz, and the
+optional Autolife-Planning stack.
 
-This workspace loads the Autolife USD robot into the scene, bridges joints and
-sensors into ROS 2, runs ROS-native controllers, and optionally exposes
-[Autolife-Planning](https://github.com/AdaCompNUS/Autolife-Planning) through ROS
-2 actions.
+## Features
 
-## Overview
+- One `autolife_sim` Conda environment for Isaac Sim 5.1, OmniGibson,
+  BEHAVIOR-1K, and MolmoSpaces.
+- A single simulator entry point for BEHAVIOR, MolmoSpaces, and local USD
+  scenes.
+- ROS 2 joint-state, joint-command, camera, LiDAR, IMU, and TF bridges.
+- ROS-native controllers with command arbitration and runtime checks.
+- Optional ROS 2 actions backed by Autolife-Planning.
+- Repository-relative dependency, cache, asset, and configuration paths.
+
+## Architecture
 
 ```mermaid
 flowchart LR
-    subgraph Sim["Isaac Sim / OmniGibson"]
-        Scene["BEHAVIOR-1K scene<br/>Wainscott_0_int"]
-        Robot["Autolife USD<br/>/World/autolife"]
-        Bridge["ROS 2 ActionGraph<br/>joints + sensors"]
-    end
-
-    subgraph ROS["ROS 2 workspace"]
-        State["/joint_states"]
-        Control["autolife_control<br/>controllers + mux"]
-        Command["/autolife/joint_command"]
-        Sensors["camera / imu / lidar / tf"]
-        Planning["autolife_planning_bridge<br/>optional actions"]
-    end
-
-    Scene --> Bridge
-    Robot --> Bridge
-    Bridge --> State
-    State --> Control
-    State --> Planning
-    Planning --> Control
-    Control --> Command
-    Command --> Bridge
-    Bridge --> Sensors
+    Scene["BEHAVIOR / MolmoSpaces / local USD"] --> Isaac["Isaac Sim + Autolife USD"]
+    Isaac -->|joint states + sensors| ROS["ROS 2 Jazzy"]
+    ROS --> Control["Controllers + command mux"]
+    Control -->|joint command| Isaac
+    ROS --> RViz["RViz"]
+    Planning["Autolife-Planning (optional)"] --> ROS
 ```
 
-Isaac Sim publishes robot state to `/joint_states`. ROS 2 controllers publish
-partial commands, `joint_command_mux` merges them into `/autolife/joint_command`,
-and the Isaac-side ActionGraph applies that command to the simulated robot.
+The simulator runs in Python 3.11. Controllers and RViz run in the system ROS
+2 Jazzy environment (Python 3.12) and communicate with Isaac Sim through DDS.
 
-## Repository Layout
+## Requirements
 
-```text
-autolife_ws/
-  README.md
-  README.zh-CN.md
-  src/
-    asset/                         # Autolife URDF, mesh, and USD assets
-    autolife_description/          # ROS 2 robot description package
-    autolife_control/              # Controllers, mux, and runtime tests
-    autolife_planning_msgs/         # Planning action interfaces
-    autolife_planning_bridge/       # Autolife-Planning ROS 2 action bridge
-    autolife_sensors/              # Sensor naming, validation, and RViz config
-    autolife_simulation/           # Isaac Sim / OmniGibson integration scripts
-    autolife_hardware/             # ros2_control hardware interface package
-```
+| Component | Validated version |
+| --- | --- |
+| Ubuntu | 24.04 |
+| ROS 2 | Jazzy |
+| Python in the simulator environment | 3.11 |
+| Isaac Sim | 5.1.0 |
+| OmniGibson | 3.8.0 |
+| BDDL | 3.7.0 |
+| BEHAVIOR-1K | commit `8579326f8a9719fe7a261f69ab0f27d545ac38a9` |
+| MolmoSpaces resource manager | `0.0.1b4` |
 
-Package documentation:
+An NVIDIA GPU supported by Isaac Sim, Git, and Conda are required. BEHAVIOR
+and MolmoSpaces datasets are downloaded separately and are not committed to
+this repository.
 
-- [autolife_simulation](src/autolife_simulation/README.md): BEHAVIOR scene
-  loading, robot insertion, joint bridge, and sensor bridge.
-- [autolife_control](src/autolife_control/README.md): controller interfaces,
-  command mux behavior, and controller runtime tests.
-- [autolife_sensors](src/autolife_sensors/README.md): sensor topic naming,
-  frame conventions, RViz config, and sensor validation.
-- [autolife_planning_bridge](src/autolife_planning_bridge/README.md): optional
-  Autolife-Planning integration and planning runtime tests.
+## Installation
 
-## External Dependencies
-
-Required externally:
-
-- Ubuntu with an NVIDIA GPU supported by Isaac Sim.
-- ROS 2 Jazzy.
-- NVIDIA Isaac Sim, available in the Python environment used by OmniGibson.
-- BEHAVIOR-1K / OmniGibson source checkout and downloaded assets.
-- A BEHAVIOR / OmniGibson Conda environment, commonly named `behavior`.
-
-This repository does not redistribute BEHAVIOR-1K scene/object assets, the
-BEHAVIOR dataset key, Isaac Sim, or a Conda environment. Install BEHAVIOR-1K
-through the official workflow:
-
-- BEHAVIOR installation: https://behavior.stanford.edu/getting_started/installation.html
-- BEHAVIOR GitHub: https://github.com/StanfordVL/BEHAVIOR-1K
-
-### Validated BEHAVIOR / OmniGibson Version
-
-OmniGibson is tightly coupled to the Isaac Sim version it was installed with.
-For reproducible setup, use the BEHAVIOR-1K commit validated with this
-workspace instead of relying on a moving `main` branch or a different stable
-release:
+Clone the repository. The directory name below is only a convention; scripts
+discover the repository root from their own location.
 
 ```bash
-cd /path/to/work
-git clone https://github.com/StanfordVL/BEHAVIOR-1K.git
-cd BEHAVIOR-1K
-git checkout 8579326f8a9719fe7a261f69ab0f27d545ac38a9
-
-./setup.sh --new-env --omnigibson --bddl --dataset \
-  --accept-conda-tos --accept-nvidia-eula --accept-dataset-tos
+git clone https://github.com/Jiaxuan0Lin/Autolife_Sim.git
+cd Autolife_Sim
 ```
 
-The validated stack is:
-
-```text
-BEHAVIOR-1K commit: 8579326f8a9719fe7a261f69ab0f27d545ac38a9
-Isaac Sim: 5.1.0
-OmniGibson KIT_FILES: (5, 1, 0)
-```
-
-After installation, verify that the BEHAVIOR checkout, Isaac Sim version, and
-OmniGibson kit mapping are aligned:
+Create the unified simulator environment:
 
 ```bash
-conda activate behavior
-
-git -C /path/to/work/BEHAVIOR-1K rev-parse HEAD
-cat "$ISAAC_PATH/VERSION"
-grep -n "KIT_FILES" -A5 /path/to/work/BEHAVIOR-1K/OmniGibson/omnigibson/simulator.py
+scripts/setup_autolife_sim_env.sh
 ```
 
-If OmniGibson reports an error like `Isaac Sim version must be one of
-[(4, 5, 0)]`, the BEHAVIOR / OmniGibson checkout is from a different version
-than the one used for this workspace.
-
-## Build
+The script checks out the validated BEHAVIOR-1K revision
+under `.deps/BEHAVIOR-1K`, invokes its official installer, and applies the
+pinned MolmoSpaces overlay from `requirements/autolife_sim.txt`. A legacy
+environment is used only when explicitly selected, which keeps the default
+installation deterministic. To migrate an existing environment:
 
 ```bash
-cd autolife_ws
+AUTOLIFE_SIM_CLONE_FROM=my_existing_env scripts/setup_autolife_sim_env.sh
+```
+
+The upstream installer presents the NVIDIA and BEHAVIOR dataset licenses. See
+the official [BEHAVIOR-1K installation guide](https://behavior.stanford.edu/getting_started/installation.html)
+before accepting them. For a non-interactive installation after reviewing the
+licenses, pass `--accept-licenses` to the setup script.
+
+Build the ROS 2 workspace in a system-ROS terminal:
+
+```bash
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-Autolife robot USD assets are expected under:
+Install the assets required by the configured MolmoSpaces scene:
 
-```text
-src/asset/usd/
+```bash
+source scripts/activate_autolife_sim.sh
+python src/autolife_simulation/scripts/download_molmospace_scene.py
 ```
+
+Downloaded data is cached under `.cache/molmospaces`; the stable asset view is
+created under `src/asset/usd/molmospaces`. Both directories are resolved from
+the repository root and can be overridden through command-line arguments.
 
 ## Quick Start
 
-Open separate terminals after building the workspace.
+Use separate terminals for the simulator and system ROS 2.
 
-Terminal 1: load the BEHAVIOR scene with Autolife:
+### 1. Start the simulator
 
 ```bash
-cd autolife_ws
-conda activate behavior
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-
-python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
-  --scene-model Wainscott_0_int
+source scripts/activate_autolife_sim.sh
+python src/autolife_simulation/scripts/start_autolife_simulation.py \
+  --scene-model molmospace_scene \
+  --steps -1
 ```
 
-Terminal 2: start the ROS 2 controllers:
+Select the scene with `--scene-model`:
+
+| Value | Scene source |
+| --- | --- |
+| `molmospace_scene` | Configured MolmoSpaces scene |
+| `desk` | Local desk scene |
+| `Wainscott_0_int` or another model name | BEHAVIOR-1K scene through OmniGibson |
+
+Use `--headless` for server execution and `--help` for all launcher options.
+
+### 2. Start ROS 2 controllers
 
 ```bash
-cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-
 ros2 launch autolife_control controllers.launch.py
 ```
 
-Terminal 3: run controller validation:
+### 3. Inspect sensors
 
 ```bash
-cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-
-python3 src/autolife_control/test/controller_test_runner.py --interactive
-```
-
-Terminal 4: run sensor validation:
-
-```bash
-cd autolife_ws
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-
-python3 src/autolife_sensors/test/sensor_test_runner.py
-```
-
-Inspect live topics:
-
-```bash
-ros2 topic list
-ros2 topic echo /joint_states
-ros2 topic echo /autolife/joint_command
-ros2 topic list | grep /autolife/sensors
-```
-
-Open the RViz sensor view:
-
-```bash
 rviz2 -d install/autolife_sensors/share/autolife_sensors/rviz/autolife_sensors.rviz
+```
+
+Runtime checks are available when needed:
+
+```bash
+python3 src/autolife_control/test/controller_test_runner.py --interactive
+python3 src/autolife_sensors/test/sensor_test_runner.py
 ```
 
 ## Optional Planning Bridge
 
-After the simulator and controllers are running, launch the planning bridge:
+Autolife-Planning remains a separate optional environment because it uses
+native planning extensions and the system ROS Python ABI. With its environment
+active, launch the bridge after the simulator and controllers:
 
 ```bash
-cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-
 ros2 launch autolife_planning_bridge planning.launch.py
 ```
 
-Run the planning runtime test:
+Set `AUTOLIFE_PLANNING_ROOT`, `AUTOLIFE_PLANNING_PYTHON_SITE`, or
+`AUTOLIFE_PLANNING_PYTHON` only when the planner is not installed in the active
+environment. See the [planning bridge documentation](src/autolife_planning_bridge/README.md).
 
-```bash
-python3 src/autolife_planning_bridge/test/planning_test_runner.py --interactive
-```
+## Configuration
 
-The bridge exposes:
+| File | Purpose |
+| --- | --- |
+| `src/autolife_simulation/config/molmospace_scene.json` | MolmoSpaces asset, spawn, physics, and interaction settings |
+| `src/autolife_simulation/config/desk.json` | Local desk scene settings |
+| `src/autolife_simulation/config/autolife.json` | Robot drive and control configuration |
+| `src/autolife_control/launch/controllers.launch.py` | ROS 2 controller launch configuration |
+| `src/autolife_sensors/test/sensor_test_config.yaml` | Sensor runtime validation settings |
+
+Project-local generated data lives in `.deps/`, `.cache/`, `build/`, `install/`,
+and `log/`; these paths are ignored by Git.
+
+## Repository Layout
 
 ```text
-/autolife_planning/joint_control
-/autolife_planning/pose_control
-/autolife_planning/trajectory_execution
+Autolife_Sim/
+├── requirements/                 # Pinned simulator overlay
+├── scripts/                      # Environment setup and activation
+├── src/
+│   ├── asset/                    # Robot, sensor, and local scene assets
+│   ├── autolife_description/     # URDF/Xacro and visualization
+│   ├── autolife_control/         # Controllers and command mux
+│   ├── autolife_hardware/        # ros2_control hardware interface
+│   ├── autolife_planning_bridge/ # Optional planning actions
+│   ├── autolife_planning_msgs/   # Planning action definitions
+│   ├── autolife_sensors/         # Sensor bridge validation and RViz
+│   └── autolife_simulation/      # Isaac Sim/OmniGibson integration
+└── README.zh-CN.md
 ```
 
-See [src/autolife_planning_bridge/README.md](src/autolife_planning_bridge/README.md)
-for the Autolife-Planning environment requirements and test configuration. The
-planning bridge is built around
-[AdaCompNUS/Autolife-Planning](https://github.com/AdaCompNUS/Autolife-Planning).
+Package-level interfaces are documented in
+[autolife_simulation](src/autolife_simulation/README.md),
+[autolife_control](src/autolife_control/README.md), and
+[autolife_sensors](src/autolife_sensors/README.md).
 
-## Repository Scope
+## License and Upstream Projects
 
-Autolife robot assets required by the examples are included under
-`src/asset/usd`. Local backup USD files, generated caches, BEHAVIOR scene/object
-assets, Isaac Sim, and Conda environments should not be committed.
+This repository is licensed under the [Apache License 2.0](LICENSE). External
+simulators, datasets, and assets retain their own licenses:
 
-External references:
-
-- BEHAVIOR website: https://behavior.stanford.edu/
-- OmniGibson overview: https://behavior.stanford.edu/omnigibson/overview.html
-- Autolife-Planning: https://github.com/AdaCompNUS/Autolife-Planning
-
-If you use BEHAVIOR-1K / OmniGibson in research, cite the official BEHAVIOR-1K
-paper from the project website.
+- [NVIDIA Isaac Sim](https://docs.isaacsim.omniverse.nvidia.com/)
+- [BEHAVIOR-1K / OmniGibson](https://github.com/StanfordVL/BEHAVIOR-1K)
+- [MolmoSpaces](https://github.com/allenai/molmospaces)
+- [Autolife-Planning](https://github.com/AdaCompNUS/Autolife-Planning)

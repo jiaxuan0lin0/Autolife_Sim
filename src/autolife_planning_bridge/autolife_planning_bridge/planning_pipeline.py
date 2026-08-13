@@ -69,8 +69,8 @@ class PlanningPipeline:
         except ImportError as exc:
             raise RuntimeError(
                 "Cannot import autolife_planning. Install it into the ROS 2 Python "
-                "environment first: python3 -m pip install --user -e "
-                "/data/jiaxuanLin/Autolife-Planning"
+                "environment first, or set AUTOLIFE_PLANNING_ROOT and "
+                "AUTOLIFE_PLANNING_PYTHON_SITE."
             ) from exc
 
         if tuple(autolife_robot_config.joint_names) != PLANNING_JOINTS:

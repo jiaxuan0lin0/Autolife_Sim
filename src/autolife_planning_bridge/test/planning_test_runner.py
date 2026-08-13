@@ -46,8 +46,7 @@ except ModuleNotFoundError as exc:
         raise SystemExit(
             "Missing ROS Python package "
             f"{exc.name!r}. Build and source the workspace first:\n\n"
-            "  cd /data/jiaxuanLin/autolife_ws\n"
-            "  source /home/sutai/home/etc/profile.d/conda.sh\n"
+            "  cd \"$(git rev-parse --show-toplevel)\"\n"
             "  conda activate autolife-planning\n"
             "  source /opt/ros/jazzy/setup.bash\n"
             "  colcon build --symlink-install --packages-select "

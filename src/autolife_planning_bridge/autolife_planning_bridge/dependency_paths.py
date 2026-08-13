@@ -6,13 +6,15 @@ import importlib
 import importlib.util
 import os
 import sys
+import sysconfig
 from pathlib import Path
 
 
-DEFAULT_PLANNER_ROOT = "/data/jiaxuanLin/Autolife-Planning"
-DEFAULT_PLANNER_PYTHON_SITE = (
-    "/home/sutai/home/envs/autolife-planning/lib/python3.12/site-packages"
-)
+REPOSITORY_ROOT = Path(
+    os.environ.get("AUTOLIFE_SIM_ROOT", Path(__file__).resolve().parents[3])
+).resolve()
+DEFAULT_PLANNER_ROOT = str(REPOSITORY_ROOT / ".deps/Autolife-Planning")
+DEFAULT_PLANNER_PYTHON_SITE = sysconfig.get_paths()["purelib"]
 
 
 def ensure_autolife_planning_importable() -> None:
@@ -30,7 +32,11 @@ def ensure_autolife_planning_importable() -> None:
         DEFAULT_PLANNER_PYTHON_SITE,
     )
     cmeel_site = str(
-        Path(planner_site) / "cmeel.prefix" / "lib" / "python3.12" / "site-packages"
+        Path(planner_site)
+        / "cmeel.prefix"
+        / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}"
+        / "site-packages"
     )
 
     _prepend_sys_path([planner_site, cmeel_site, planner_root])

@@ -1,0 +1,50 @@
+{
+  "scene_model": "desk",
+  "asset_root": "src/asset/usd",
+  "scene": {
+    "source": "local",
+    "version": "local",
+    "directory": "desk",
+    "entrypoint": "scene.usda"
+  },
+  "additional_assets": {
+    "lightwheel_microwave": false
+  },
+  "scene_content": {
+    "disable_objaverse_objects": false
+  },
+  "robot_spawn": {
+    "position": [-1.5, 0.0, 0.05],
+    "orientation_wxyz": [1.0, 0.0, 0.0, 0.0]
+  },
+  "physics": {
+    "physics_frequency_hz": 120,
+    "rendering_frequency_hz": 30,
+    "gpu_total_aggregate_pairs_capacity": 4096,
+    "gpu_found_lost_aggregate_pairs_capacity": 4096
+  },
+  "interaction": {
+    "enable_physx_ui": true,
+    "mouse_picking_force": 3.0
+  },
+  "robot_mouse_interaction": {
+    "enabled": true,
+    "capture_base_target_during_drag": true,
+    "minimum_mimic_joint_damping_ratio": 1.0,
+    "minimum_solver_velocity_iteration_count": 4
+  },
+  "articulated_object_stabilization": {
+    "enabled": true,
+    "joint_friction": 0.05,
+    "revolute": {
+      "damping": 0.08,
+      "max_force": 6.0,
+      "max_velocity": 120.0
+    },
+    "prismatic": {
+      "damping": 6.0,
+      "max_force": 20.0,
+      "max_velocity": 0.5
+    }
+  }
+}

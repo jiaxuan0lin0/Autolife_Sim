@@ -1,259 +1,210 @@
-# Autolife Sim
+# Autolife_Sim
 
-[English README](README.md)
+[English](README.md)
 
 ![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E)
-![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-required-76B900)
-![OmniGibson](https://img.shields.io/badge/OmniGibson-BEHAVIOR--1K-5B6EE1)
-![Python](https://img.shields.io/badge/Python-3.12-3776AB)
-![Autolife USD](https://img.shields.io/badge/Autolife%20USD-included-555555)
+![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-5.1-76B900)
+![Python](https://img.shields.io/badge/Simulator%20Python-3.11-3776AB)
+![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
 <p align="center">
-  <img src="docs/assets/autolife-sim-hero.png" alt="Autolife Sim ROS 2 Control in Isaac Sim" width="100%">
+  <img src="docs/assets/autolife-sim-hero.png" alt="Isaac Sim 中的 Autolife 机器人" width="100%">
 </p>
 
-Autolife Sim 是一个面向 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工作空间。
-当前主要验证场景是 `Wainscott_0_int`。
+Autolife_Sim 是 Autolife 机器人的 ROS 2 + Isaac Sim 仿真工作空间。它可以把
+机器人加载到 BEHAVIOR-1K、MolmoSpaces 或最小桌面场景中，并将仿真关节和
+传感器连接到 ROS 2 controllers、RViz，以及可选的 Autolife-Planning。
 
-这个 workspace 会把 Autolife USD 机器人加载到 BEHAVIOR-1K / OmniGibson
-家庭场景中，把关节和传感器桥接到 ROS 2，运行 ROS-native controllers，并可选
-通过 ROS 2 actions 接入
-[Autolife-Planning](https://github.com/AdaCompNUS/Autolife-Planning)。
+## 主要功能
 
-## 项目概览
+- 使用一个 `autolife_sim` Conda 环境运行 Isaac Sim 5.1、OmniGibson、
+  BEHAVIOR-1K 和 MolmoSpaces。
+- BEHAVIOR、MolmoSpaces 和本地 USD 共用同一个仿真启动入口。
+- 提供关节状态、关节命令、相机、LiDAR、IMU 和 TF 的 ROS 2 bridge。
+- 提供带命令仲裁和运行时检查的 ROS-native controllers。
+- 可选接入基于 ROS 2 actions 的 Autolife-Planning。
+- 依赖、缓存、资产和配置默认使用仓库相对路径。
+
+## 系统架构
 
 ```mermaid
 flowchart LR
-    subgraph Sim["Isaac Sim / OmniGibson"]
-        Scene["BEHAVIOR-1K scene<br/>Wainscott_0_int"]
-        Robot["Autolife USD<br/>/World/autolife"]
-        Bridge["ROS 2 ActionGraph<br/>关节 + 传感器"]
-    end
-
-    subgraph ROS["ROS 2 workspace"]
-        State["/joint_states"]
-        Control["autolife_control<br/>controllers + mux"]
-        Command["/autolife/joint_command"]
-        Sensors["camera / imu / lidar / tf"]
-        Planning["autolife_planning_bridge<br/>可选 planning actions"]
-    end
-
-    Scene --> Bridge
-    Robot --> Bridge
-    Bridge --> State
-    State --> Control
-    State --> Planning
-    Planning --> Control
-    Control --> Command
-    Command --> Bridge
-    Bridge --> Sensors
+    Scene["BEHAVIOR / MolmoSpaces / 本地 USD"] --> Isaac["Isaac Sim + Autolife USD"]
+    Isaac -->|关节状态 + 传感器| ROS["ROS 2 Jazzy"]
+    ROS --> Control["Controllers + command mux"]
+    Control -->|关节命令| Isaac
+    ROS --> RViz["RViz"]
+    Planning["Autolife-Planning（可选）"] --> ROS
 ```
 
-Isaac Sim 发布机器人状态到 `/joint_states`；ROS 2 controllers 发布各自的局部
-命令；`joint_command_mux` 合并成 `/autolife/joint_command`；Isaac 侧
-ActionGraph 再把命令作用到仿真机器人上。
+仿真环境使用 Python 3.11；controllers 和 RViz 使用系统 ROS 2 Jazzy 的
+Python 3.12。两侧通过 DDS 通信，不应在同一个终端混合 Python 路径。
 
-## 仓库结构
+## 环境要求
 
-```text
-autolife_ws/
-  README.md
-  README.zh-CN.md
-  src/
-    asset/                         # Autolife URDF、mesh 和 USD 资产
-    autolife_description/          # ROS 2 robot description 包
-    autolife_control/              # Controllers、mux 和运行时测试
-    autolife_planning_msgs/         # Planning action 接口
-    autolife_planning_bridge/       # Autolife-Planning ROS 2 action bridge
-    autolife_sensors/              # 传感器命名、验证和 RViz 配置
-    autolife_simulation/           # Isaac Sim / OmniGibson 集成脚本
-    autolife_hardware/             # ros2_control hardware interface 包
-```
+| 组件 | 已验证版本 |
+| --- | --- |
+| Ubuntu | 24.04 |
+| ROS 2 | Jazzy |
+| 仿真环境 Python | 3.11 |
+| Isaac Sim | 5.1.0 |
+| OmniGibson | 3.8.0 |
+| BDDL | 3.7.0 |
+| BEHAVIOR-1K | commit `8579326f8a9719fe7a261f69ab0f27d545ac38a9` |
+| MolmoSpaces resource manager | `0.0.1b4` |
 
-子包文档：
+还需要 Isaac Sim 支持的 NVIDIA GPU、Git 和 Conda。BEHAVIOR 与
+MolmoSpaces 数据集需要单独下载，不会提交到本仓库。
 
-- [autolife_simulation](src/autolife_simulation/README.md)：BEHAVIOR 场景加载、
-  机器人插入、关节桥接和传感器桥接。
-- [autolife_control](src/autolife_control/README.md)：controller 接口、
-  command mux 行为和 controller 运行时测试。
-- [autolife_sensors](src/autolife_sensors/README.md)：sensor topic 命名、
-  frame 约定、RViz 配置和 sensor 验证。
-- [autolife_planning_bridge](src/autolife_planning_bridge/README.md)：可选
-  Autolife-Planning 集成和 planning 运行时测试。
+## 安装
 
-## 外部依赖
-
-必需环境：
-
-- 带 NVIDIA GPU 的 Ubuntu 机器，GPU 需要满足 Isaac Sim 要求。
-- ROS 2 Jazzy。
-- 当前 Python 环境能访问 NVIDIA Isaac Sim。
-- BEHAVIOR-1K / OmniGibson 源码和已下载的 assets。
-- BEHAVIOR / OmniGibson 对应的 Conda 环境，常用环境名是 `behavior`。
-
-这个仓库不分发 BEHAVIOR-1K 场景/物体数据、BEHAVIOR dataset key、Isaac Sim，
-也不包含 Conda 环境。请通过官方流程安装 BEHAVIOR-1K：
-
-- BEHAVIOR installation: https://behavior.stanford.edu/getting_started/installation.html
-- BEHAVIOR GitHub: https://github.com/StanfordVL/BEHAVIOR-1K
-
-### 已验证的 BEHAVIOR / OmniGibson 版本
-
-OmniGibson 和 Isaac Sim 版本是强绑定的。为了保证别人复现时拿到同一套仿真
-栈，不要直接依赖会变化的 `main` 分支，也不要随意换成其他 stable release。
-请固定到本 workspace 验证过的 BEHAVIOR-1K commit：
+克隆仓库。下面的目录名只是推荐值；脚本会根据自身位置自动确定仓库根目录。
 
 ```bash
-cd /path/to/work
-git clone https://github.com/StanfordVL/BEHAVIOR-1K.git
-cd BEHAVIOR-1K
-git checkout 8579326f8a9719fe7a261f69ab0f27d545ac38a9
-
-./setup.sh --new-env --omnigibson --bddl --dataset \
-  --accept-conda-tos --accept-nvidia-eula --accept-dataset-tos
+git clone https://github.com/Jiaxuan0Lin/Autolife_Sim.git
+cd Autolife_Sim
 ```
 
-当前验证过的组合是：
-
-```text
-BEHAVIOR-1K commit: 8579326f8a9719fe7a261f69ab0f27d545ac38a9
-Isaac Sim: 5.1.0
-OmniGibson KIT_FILES: (5, 1, 0)
-```
-
-安装完成后，用下面几条命令检查 BEHAVIOR checkout、Isaac Sim 版本和
-OmniGibson kit 映射是否对齐：
+创建统一的仿真环境：
 
 ```bash
-conda activate behavior
-
-git -C /path/to/work/BEHAVIOR-1K rev-parse HEAD
-cat "$ISAAC_PATH/VERSION"
-grep -n "KIT_FILES" -A5 /path/to/work/BEHAVIOR-1K/OmniGibson/omnigibson/simulator.py
+scripts/setup_autolife_sim_env.sh
 ```
 
-如果报错类似 `Isaac Sim version must be one of [(4, 5, 0)]`，说明当前安装的
-BEHAVIOR / OmniGibson 不是本 workspace 验证过的版本。
-
-## 编译
+脚本会把已验证的 BEHAVIOR-1K 版本检出到
+`.deps/BEHAVIOR-1K`，调用其官方安装器，然后安装
+`requirements/autolife_sim.txt` 中固定的 MolmoSpaces 覆盖依赖。默认安装不会
+隐式复用本机已有环境，以保证结果确定；需要迁移旧环境时显式指定来源：
 
 ```bash
-cd autolife_ws
+AUTOLIFE_SIM_CLONE_FROM=my_existing_env scripts/setup_autolife_sim_env.sh
+```
+
+上游安装器会显示 NVIDIA 和 BEHAVIOR 数据集许可。接受前请阅读官方
+[BEHAVIOR-1K 安装说明](https://behavior.stanford.edu/getting_started/installation.html)。
+阅读并同意后，如需非交互式安装，可给脚本添加 `--accept-licenses`。
+
+在系统 ROS 2 终端编译工作空间：
+
+```bash
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-Autolife 机器人 USD 资产应位于：
-
-```text
-src/asset/usd/
-```
-
-## 快速启动
-
-编译完成后，打开多个终端分别运行。
-
-终端 1：加载 BEHAVIOR 场景和 Autolife：
+下载当前配置所需的 MolmoSpaces 场景资产：
 
 ```bash
-cd autolife_ws
-conda activate behavior
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-
-python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
-  --scene-model Wainscott_0_int
+source scripts/activate_autolife_sim.sh
+python src/autolife_simulation/scripts/download_molmospace_scene.py
 ```
 
-终端 2：启动 ROS 2 controllers：
+下载缓存默认位于 `.cache/molmospaces`，稳定资产视图位于
+`src/asset/usd/molmospaces`。二者都从仓库根目录解析，也可以通过命令行参数覆盖。
+
+## 快速开始
+
+仿真和系统 ROS 2 应分别在不同终端运行。
+
+### 1. 启动仿真
 
 ```bash
-cd autolife_ws
+source scripts/activate_autolife_sim.sh
+python src/autolife_simulation/scripts/start_autolife_simulation.py \
+  --scene-model molmospace_scene \
+  --steps -1
+```
+
+使用 `--scene-model` 切换场景：
+
+| 参数值 | 场景来源 |
+| --- | --- |
+| `molmospace_scene` | 配置的 MolmoSpaces 场景 |
+| `desk` | 本地桌面场景 |
+| `Wainscott_0_int` 或其他模型名 | 通过 OmniGibson 加载的 BEHAVIOR-1K 场景 |
+
+服务器运行时可加 `--headless`；完整参数见 `--help`。
+
+### 2. 启动 ROS 2 controllers
+
+```bash
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-
 ros2 launch autolife_control controllers.launch.py
 ```
 
-终端 3：运行 controller 验证：
+### 3. 查看传感器
 
 ```bash
-cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-
-python3 src/autolife_control/test/controller_test_runner.py --interactive
-```
-
-终端 4：运行 sensor 验证：
-
-```bash
-cd autolife_ws
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-
-python3 src/autolife_sensors/test/sensor_test_runner.py
-```
-
-查看运行中的 ROS 2 topics：
-
-```bash
-ros2 topic list
-ros2 topic echo /joint_states
-ros2 topic echo /autolife/joint_command
-ros2 topic list | grep /autolife/sensors
-```
-
-打开预置 RViz sensor 视图：
-
-```bash
 rviz2 -d install/autolife_sensors/share/autolife_sensors/rviz/autolife_sensors.rviz
+```
+
+需要验证运行状态时，可以执行：
+
+```bash
+python3 src/autolife_control/test/controller_test_runner.py --interactive
+python3 src/autolife_sensors/test/sensor_test_runner.py
 ```
 
 ## 可选 Planning Bridge
 
-仿真和 controllers 都启动后，再启动 planning bridge：
+Autolife-Planning 使用原生规划扩展和系统 ROS Python ABI，因此仍保留为独立的
+可选环境。激活其环境后，在仿真和 controllers 已运行的情况下启动 bridge：
 
 ```bash
-cd autolife_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-
 ros2 launch autolife_planning_bridge planning.launch.py
 ```
 
-运行 planning runtime test：
+只有当 planner 不在当前环境中时，才需要设置 `AUTOLIFE_PLANNING_ROOT`、
+`AUTOLIFE_PLANNING_PYTHON_SITE` 或 `AUTOLIFE_PLANNING_PYTHON`。详细说明见
+[planning bridge 文档](src/autolife_planning_bridge/README.md)。
 
-```bash
-python3 src/autolife_planning_bridge/test/planning_test_runner.py --interactive
-```
+## 配置文件
 
-bridge 暴露：
+| 文件 | 用途 |
+| --- | --- |
+| `src/autolife_simulation/config/molmospace_scene.json` | MolmoSpaces 资产、出生点、物理和交互参数 |
+| `src/autolife_simulation/config/desk.json` | 本地桌面场景配置 |
+| `src/autolife_simulation/config/autolife.json` | 机器人 drive 和控制配置 |
+| `src/autolife_control/launch/controllers.launch.py` | ROS 2 controller 启动配置 |
+| `src/autolife_sensors/test/sensor_test_config.yaml` | 传感器运行时验证配置 |
+
+
+
+## 仓库结构
 
 ```text
-/autolife_planning/joint_control
-/autolife_planning/pose_control
-/autolife_planning/trajectory_execution
+Autolife_Sim/
+├── requirements/                 # 固定的仿真覆盖依赖
+├── scripts/                      # 环境安装和激活脚本
+├── src/
+│   ├── asset/                    # 机器人、传感器和本地场景资产
+│   ├── autolife_description/     # URDF/Xacro 和可视化
+│   ├── autolife_control/         # Controllers 和 command mux
+│   ├── autolife_hardware/        # ros2_control hardware interface
+│   ├── autolife_planning_bridge/ # 可选 planning actions
+│   ├── autolife_planning_msgs/   # Planning action 定义
+│   ├── autolife_sensors/         # 传感器验证和 RViz
+│   └── autolife_simulation/      # Isaac Sim/OmniGibson 集成
+└── README.md
 ```
 
-Autolife-Planning 环境要求和测试配置见
-[src/autolife_planning_bridge/README.md](src/autolife_planning_bridge/README.md)。
-planning bridge 基于
-[AdaCompNUS/Autolife-Planning](https://github.com/AdaCompNUS/Autolife-Planning)
-集成。
+各 ROS 包的接口见
+[autolife_simulation](src/autolife_simulation/README.md)、
+[autolife_control](src/autolife_control/README.md) 和
+[autolife_sensors](src/autolife_sensors/README.md)。
 
-## 仓库范围
+## 许可证与上游项目
 
-示例运行所需的 Autolife 机器人资产包含在 `src/asset/usd`。本地 USD 备份、
-生成缓存、BEHAVIOR 场景/物体资产、Isaac Sim 和 Conda 环境都不应提交。
+本仓库使用 [Apache License 2.0](LICENSE)。外部仿真器、数据集和资产保留各自的
+许可证：
 
-外部参考：
-
-- BEHAVIOR website: https://behavior.stanford.edu/
-- OmniGibson overview: https://behavior.stanford.edu/omnigibson/overview.html
-- Autolife-Planning: https://github.com/AdaCompNUS/Autolife-Planning
-
-如果在研究中使用 BEHAVIOR-1K / OmniGibson，请引用项目官网提供的官方
-BEHAVIOR-1K 论文。
+- [NVIDIA Isaac Sim](https://docs.isaacsim.omniverse.nvidia.com/)
+- [BEHAVIOR-1K / OmniGibson](https://github.com/StanfordVL/BEHAVIOR-1K)
+- [MolmoSpaces](https://github.com/allenai/molmospaces)
+- [Autolife-Planning](https://github.com/AdaCompNUS/Autolife-Planning)

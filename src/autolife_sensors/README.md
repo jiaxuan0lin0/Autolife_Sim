@@ -149,7 +149,7 @@ The simulation writes a sensor manifest after creating the sensor ActionGraph.
 Default path:
 
 ```text
-/tmp/autolife_sensor_manifest.json
+.cache/runtime/autolife_sensor_manifest.json
 ```
 
 The manifest is generated from the actual USD stage and contains:
@@ -170,9 +170,9 @@ publishing does not require a consumer to read it.
 The manifest path is controlled by the simulation loader:
 
 ```bash
-python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
+python3 src/autolife_simulation/scripts/start_autolife_simulation.py \
   --scene-model Wainscott_0_int \
-  --sensor-manifest-path /tmp/autolife_sensor_manifest.json \
+  --sensor-manifest-path .cache/runtime/autolife_sensor_manifest.json \
   --steps -1
 ```
 
@@ -181,7 +181,7 @@ python3 src/autolife_simulation/scripts/load_behavior_scene_with_autolife.py \
 Start the simulation with ROS 2 sensors enabled first. From another terminal:
 
 ```bash
-cd /data/jiaxuanLin/autolife_ws
+cd "$(git rev-parse --show-toplevel)"
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 
@@ -198,7 +198,7 @@ Use a custom manifest path:
 
 ```bash
 python3 src/autolife_sensors/test/sensor_test_runner.py \
-  --manifest /tmp/autolife_sensor_manifest.json
+  --manifest .cache/runtime/autolife_sensor_manifest.json
 ```
 
 Use a custom test config:
@@ -247,7 +247,7 @@ Important fields:
 Build and source the workspace:
 
 ```bash
-cd /data/jiaxuanLin/autolife_ws
+cd "$(git rev-parse --show-toplevel)"
 colcon build --packages-select autolife_sensors --symlink-install
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
@@ -312,69 +312,5 @@ ros2 topic echo /tf --once
 Inspect the manifest:
 
 ```bash
-python3 -m json.tool /tmp/autolife_sensor_manifest.json | head -100
+python3 -m json.tool .cache/runtime/autolife_sensor_manifest.json | head -100
 ```
-
-## Troubleshooting
-
-### Manifest Not Found
-
-Start the simulation first and make sure it was not launched with:
-
-```text
---no-ros2-sensors
-```
-
-The simulation log should include:
-
-```text
-Wrote ROS2 sensor manifest: /tmp/autolife_sensor_manifest.json
-```
-
-### Expected Topics Missing
-
-Check that:
-
-1. The simulation is running and stepping.
-2. `/AutolifeSensorGraph` exists in the Isaac Sim stage.
-3. The sensor overlay was copied onto `/World/autolife`.
-4. ROS 2 was sourced in the terminal running the test.
-
-### RViz Transform Error
-
-Check the message frame and TF tree:
-
-```bash
-ros2 topic echo /autolife/sensors/camera_head_forehead/points --once
-ros2 topic echo /tf --once
-```
-
-RViz should use `World` as the fixed frame when using the bundled preset.
-
-### Frame ID Mismatch
-
-Compare the live message frame with the manifest:
-
-```bash
-python3 -m json.tool /tmp/autolife_sensor_manifest.json | grep frame_id
-```
-
-Camera outputs should use optical frame IDs. LiDAR and IMU outputs should use
-their link frame IDs.
-
-### Empty Image or Point Cloud
-
-Check that the simulation is playing and that the corresponding render product
-was created. For full-scene validation, run the simulation without
-`--quick-load`.
-
-### RViz Shows Only Some Displays
-
-Use the installed preset from this package:
-
-```bash
-rviz2 -d "$(ros2 pkg prefix autolife_sensors)/share/autolife_sensors/rviz/autolife_sensors.rviz"
-```
-
-If RViz was already open with another config, load the preset manually from the
-RViz menu or restart RViz with the command above.

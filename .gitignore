@@ -1,6 +1,9 @@
 build/
 install/
 log/
+.cache/
+.deps/
 __pycache__/
 *.pyc
 *.bak_*
+src/asset/usd/molmospaces/

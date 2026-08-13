@@ -1,5 +1,5 @@
 global:
-  manifest_path: /tmp/autolife_sensor_manifest.json
+  manifest_path: .cache/runtime/autolife_sensor_manifest.json
   topic_timeout: 10.0
   sample_duration: 5.0
   min_messages: 1

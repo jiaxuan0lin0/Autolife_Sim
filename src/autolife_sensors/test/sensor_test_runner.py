@@ -23,6 +23,8 @@ from autolife_sensors.sensor_config import TF_MESSAGE_TYPE, TF_TOPIC
 
 
 DEFAULT_CONFIG_PATH = Path(__file__).with_name("sensor_test_config.yaml")
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_MANIFEST_PATH = REPOSITORY_ROOT / ".cache/runtime/autolife_sensor_manifest.json"
 
 MESSAGE_TYPES = {
     "sensor_msgs/msg/Image": Image,
@@ -303,6 +305,8 @@ def load_config(path):
 def load_manifest(path):
     """Load a runtime sensor manifest emitted by the Isaac sensor bridge."""
     manifest_path = Path(path).expanduser()
+    if not manifest_path.is_absolute():
+        manifest_path = REPOSITORY_ROOT / manifest_path
     if not manifest_path.exists():
         raise FileNotFoundError(
             f"sensor manifest does not exist: {manifest_path}. "
@@ -337,7 +341,7 @@ def main():
     args = parse_args()
     config = load_config(args.config)
     manifest_path = args.manifest or config.get("global", {}).get(
-        "manifest_path", "/tmp/autolife_sensor_manifest.json"
+        "manifest_path", DEFAULT_MANIFEST_PATH
     )
     try:
         manifest = load_manifest(manifest_path)

@@ -1,0 +1,54 @@
+#usda 1.0
+(
+    defaultPrim = "Desk"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Desk"
+{
+    def PhysicsScene "PhysicsScene"
+    {
+        vector3f physics:gravityDirection = (0, 0, -1)
+        float physics:gravityMagnitude = 9.81
+    }
+
+    def Xform "Geometry"
+    {
+        # This collider is intentionally invisible. It is not a background
+        # asset; it only keeps the robot and the dynamic table from falling.
+        def Cube "InvisibleGround" (
+            prepend apiSchemas = ["PhysicsCollisionAPI"]
+        )
+        {
+            bool physics:collisionEnabled = true
+            double size = 1
+            token visibility = "invisible"
+            float3 xformOp:scale = (20, 20, 0.1)
+            double3 xformOp:translate = (0, 0, -0.05)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        # A square MolmoSpaces THOR dining table with native rigid-body,
+        # mass, and collider properties.
+        def Xform "Table" (
+            prepend references = @../../../molmospaces/objects/thor/Dining_Table_205_1_prim/Dining_Table_205_1_prim.usda@
+        )
+        {
+            quatf xformOp:orient = (0, 0, 0.707107, 0.707107)
+            float3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (0, 0, 0.370873)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+    }
+
+    def DistantLight "KeyLight"
+    {
+        float inputs:angle = 2
+        color3f inputs:color = (1, 0.96, 0.9)
+        float inputs:intensity = 2500
+        double3 xformOp:rotateXYZ = (315, 0, 35)
+        uniform token[] xformOpOrder = ["xformOp:rotateXYZ"]
+    }
+}

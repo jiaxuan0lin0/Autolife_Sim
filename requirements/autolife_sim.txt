@@ -1,0 +1,11 @@
+# autolife_sim overlay installed after the pinned BEHAVIOR / OmniGibson setup.
+#
+# Install this file with --no-deps. Isaac Sim 5.1 requires click==8.1.7, while
+# a MolmoSpaces transitive CLI dependency asks for a newer Click. The
+# MolmoSpaces ResourceManager API used by this workspace works with 8.1.7.
+click==8.1.7
+typeguard==4.3.0
+typer==0.20.0
+lmdb==1.7.5
+zstandard==0.25.0
+molmospaces-resources==0.0.1b4

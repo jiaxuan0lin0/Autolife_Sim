@@ -1,4 +1,6 @@
 import json
+from pathlib import Path
+
 import omni.usd
 from pxr import UsdPhysics
 from pxr import PhysxSchema
@@ -14,7 +16,7 @@ WRITE_ARM_MAX_FORCE = False
 WRITE_GRIPPER_MAX_FORCE = True
 WRITE_SYNC_SPEED_LIMITS = True
 SAVE_STAGE = True
-CONFIG = "/data/jiaxuanLin/autolife_ws/src/autolife_simulation/config/autolife.json"
+CONFIG = Path(__file__).resolve().parents[1] / "config" / "autolife.json"
 USD_CONTEXT = omni.usd.get_context()
 
 # Baseline Isaac drive gains selected from the URDF effort limits and current USD
@@ -56,7 +58,7 @@ TUNED_PID_VALUES = {
 # ========================== Load the config ============================
 # =======================================================================
 
-with open(CONFIG, "r", encoding="utf-8") as f:
+with CONFIG.open("r", encoding="utf-8") as f:
     cfg = json.load(f)
 
 stage = USD_CONTEXT.get_stage()

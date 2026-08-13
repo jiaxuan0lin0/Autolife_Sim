@@ -53,12 +53,19 @@ def setup_sensor_bridge(
     ]
     set_values = []
     connections = []
+    deferred_init_nodes = []
 
     tf_targets = _tf_targets(sensors, robot_articulation_path)
     if tf_targets:
-        create_nodes.append(("PublishTF", "isaacsim.ros2.bridge.ROS2PublishTransformTree"))
+        create_nodes.extend(
+            [
+                ("PublishTFGate", "omni.graph.action.Branch"),
+                ("PublishTF", "isaacsim.ros2.bridge.ROS2PublishTransformTree"),
+            ]
+        )
         set_values.extend(
             [
+                ("PublishTFGate.inputs:condition", False),
                 ("PublishTF.inputs:targetPrims", [usdrt.Sdf.Path(path) for path in tf_targets]),
                 ("PublishTF.inputs:topicName", TF_TOPIC),
                 ("PublishTF.inputs:queueSize", 10),
@@ -68,7 +75,8 @@ def setup_sensor_bridge(
             set_values.append(("PublishTF.inputs:parentPrim", [usdrt.Sdf.Path("/World")]))
         connections.extend(
             [
-                ("OnPlaybackTick.outputs:tick", "PublishTF.inputs:execIn"),
+                ("OnPlaybackTick.outputs:tick", "PublishTFGate.inputs:execIn"),
+                ("PublishTFGate.outputs:execTrue", "PublishTF.inputs:execIn"),
                 ("ReadSimTime.outputs:simulationTime", "PublishTF.inputs:timeStamp"),
                 ("RosContext.outputs:context", "PublishTF.inputs:context"),
             ]
@@ -88,9 +96,11 @@ def setup_sensor_bridge(
                 (f"{render_node}.inputs:cameraPrim", [usdrt.Sdf.Path(camera_path)]),
                 (f"{render_node}.inputs:width", int(camera_width)),
                 (f"{render_node}.inputs:height", int(camera_height)),
+                (f"{render_node}.inputs:enabled", False),
             ]
         )
         connections.append(("OnPlaybackTick.outputs:tick", f"{render_node}.inputs:execIn"))
+        deferred_init_nodes.append(f"{render_node}.inputs:enabled")
 
         for output_type in camera_outputs_for_role(camera["role"]):
             if output_type == "camera_info":
@@ -102,6 +112,7 @@ def setup_sensor_bridge(
                         (f"{node_name}.inputs:frameId", frame_id),
                         (f"{node_name}.inputs:frameSkipCount", int(frame_skip_count)),
                         (f"{node_name}.inputs:queueSize", 10),
+                        (f"{node_name}.inputs:enabled", False),
                     ]
                 )
                 connections.extend(
@@ -124,6 +135,7 @@ def setup_sensor_bridge(
                         (f"{node_name}.inputs:frameId", frame_id),
                         (f"{node_name}.inputs:frameSkipCount", int(frame_skip_count)),
                         (f"{node_name}.inputs:queueSize", 10),
+                        (f"{node_name}.inputs:enabled", False),
                     ]
                 )
                 connections.extend(
@@ -136,6 +148,7 @@ def setup_sensor_bridge(
                         ("RosContext.outputs:context", f"{node_name}.inputs:context"),
                     ]
                 )
+            deferred_init_nodes.append(f"{node_name}.inputs:enabled")
             camera_output_count += 1
 
     imu_output_count = 0
@@ -180,8 +193,14 @@ def setup_sensor_bridge(
         render_node = f"CreateLidarRenderProduct_{node_suffix}"
 
         create_nodes.append((render_node, "isaacsim.core.nodes.IsaacCreateRenderProduct"))
-        set_values.append((f"{render_node}.inputs:cameraPrim", [usdrt.Sdf.Path(lidar["path"])]))
+        set_values.extend(
+            [
+                (f"{render_node}.inputs:cameraPrim", [usdrt.Sdf.Path(lidar["path"])]),
+                (f"{render_node}.inputs:enabled", False),
+            ]
+        )
         connections.append(("OnPlaybackTick.outputs:tick", f"{render_node}.inputs:execIn"))
+        deferred_init_nodes.append(f"{render_node}.inputs:enabled")
 
         for output_type in lidar_outputs_for_role(lidar["role"]):
             node_name = f"Lidar_{output_type}_{node_suffix}"
@@ -193,6 +212,7 @@ def setup_sensor_bridge(
                     (f"{node_name}.inputs:frameId", frame_id_for_sensor(sensor_name)),
                     (f"{node_name}.inputs:frameSkipCount", int(frame_skip_count)),
                     (f"{node_name}.inputs:queueSize", 10),
+                    (f"{node_name}.inputs:enabled", False),
                 ]
             )
             connections.extend(
@@ -205,7 +225,13 @@ def setup_sensor_bridge(
                     ("RosContext.outputs:context", f"{node_name}.inputs:context"),
                 ]
             )
+            deferred_init_nodes.append(f"{node_name}.inputs:enabled")
             lidar_output_count += 1
+
+    # Transform-tree publication traverses the articulation and every sensor
+    # prim. Enable it only after all Replicator-authored stage changes settle.
+    if tf_targets:
+        deferred_init_nodes.append("PublishTFGate.inputs:condition")
 
     if len(create_nodes) == 3:
         _write_manifest(
@@ -227,6 +253,7 @@ def setup_sensor_bridge(
             "lidars": 0,
             "lidar_outputs": 0,
             "tf_targets": 0,
+            "deferred_init_nodes": [],
         }
 
     og.Controller.edit(
@@ -258,18 +285,35 @@ def setup_sensor_bridge(
         "lidars": len(sensors["lidars"]),
         "lidar_outputs": lidar_output_count,
         "tf_targets": len(tf_targets),
+        # Render products and Replicator writers author USD nodes on their first
+        # execution. Starting every camera and lidar in the same frame can race
+        # ROS2 bridge traversal against those stage edits and crash in
+        # Usd_PrimData::GetParent. The loader enables this ordered list one item
+        # per rendered frame after starting the timeline.
+        "deferred_init_nodes": deferred_init_nodes,
     }
 
 
 def _add_camera_optical_frames(stage, cameras):
-    from pxr import UsdGeom
+    from pxr import Sdf, Usd
 
-    for camera in cameras:
-        frame_id = camera_optical_frame_id(camera["sensor_name"])
-        frame_path = f"{camera['path']}/{frame_id}"
-        UsdGeom.Camera.Define(stage, frame_path)
-        camera["frame_id"] = frame_id
-        camera["frame_path"] = frame_path
+    # ROS2PublishTransformTree honors isaac:nameOverride. Authoring the desired
+    # optical frame ID on the real camera is safer than defining a synthetic
+    # child below a referenced camera: the GUI Layers extension can invalidate
+    # such child specs when it locks/recomposes the referenced sensor overlay.
+    with Usd.EditContext(stage, stage.GetSessionLayer()):
+        for camera in cameras:
+            frame_id = camera_optical_frame_id(camera["sensor_name"])
+            camera_prim = stage.GetPrimAtPath(camera["path"])
+            if not camera_prim.IsValid():
+                raise RuntimeError(f"Camera prim is invalid: {camera['path']}")
+            camera_prim.CreateAttribute(
+                "isaac:nameOverride",
+                Sdf.ValueTypeNames.String,
+                custom=True,
+            ).Set(frame_id)
+            camera["frame_id"] = frame_id
+            camera["frame_path"] = camera["path"]
 
 
 def _write_manifest(
